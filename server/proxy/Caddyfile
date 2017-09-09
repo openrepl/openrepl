@@ -1,6 +1,8 @@
 api.techmeowt.com:80 {
     header / Access-Control-Allow-Origin *
-    proxy /60s/add 60s:80/add
+    proxy /60s/ 60s:80 {
+        without /60s
+    }
     proxy / interactive:52 {
         websocket
         transparent
