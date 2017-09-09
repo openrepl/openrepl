@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NAME=$(mktemp -d -p /srv XXXXXX)
+NAME=$(mktemp -d -p /home XXXXXX)
 
 function cleanup() {
     docker kill $(basename $NAME)
