@@ -1,4 +1,4 @@
-langs = lua python2 python3 forth
+langs = lua python2 python3 forth bash cpp
 .PHONY: $(langs)
 all: $(langs)
 

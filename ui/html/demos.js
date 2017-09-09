@@ -3,4 +3,6 @@ var demos = {
     python2: 'print "Hello world!"',
     python3: 'print("Hello world!")',
     forth: '1 1 + .',
+    bash: 'echo "Hello World!"',
+    cpp: '#include<stdio.h>\n\nvoid main() {\n\tprintf("Hello World!")\n}',
 };
