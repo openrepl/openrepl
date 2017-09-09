@@ -8,4 +8,5 @@ api.techmeowt.com:80 {
 
 repl.techmeowt.com:80 {
     root /web
+    index repl.html
 }
