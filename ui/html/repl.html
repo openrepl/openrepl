@@ -55,6 +55,7 @@
                     document.getElementById("editor").style.top = document.getElementById("container").offsetTop;
                     document.getElementById("terminal").style.top = document.getElementById("container").offsetTop;
                     document.getElementById("terminal").style.left = document.getElementById("editor").offsetWidth;
+                    document.getElementById("terminal").style.height = window.innerHeight - document.getElementById("container").offsetTop;
                 };
                 window.onresize();
                 function setLanguage(lang) {
