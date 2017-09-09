@@ -5,6 +5,7 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -19,6 +20,7 @@ func main() {
 	http.HandleFunc("/add", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPut {
 			http.Error(w, "Not a put", http.StatusBadRequest)
+			log.Printf("Incorrect method %s\n", r.Method)
 			return
 		}
 		buf := bytes.NewBuffer(nil)
