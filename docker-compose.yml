@@ -11,5 +11,7 @@ services:
     image: "openrepl/interactive"
     links:
     - "60s"
+    volumes:
+    - "/var/run/docker.sock:/var/run/docker.sock"
   60s:
     image: "openrepl/60s"
