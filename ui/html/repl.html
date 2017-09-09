@@ -27,6 +27,16 @@
                         right: 0;
                         width: 65%;
                     }
+                    #terminal {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        bottom: 0;
+                        right: 0;
+                        width: 35%;
+                        float: right;
+                        border: none;
+                    }
                 </style>
                 <div id="editor">
                     function foo(items) {
@@ -36,13 +46,15 @@
                 </div>
             </div>
             <div class="col">
-                <iframe id="terminal" style="width:35%;float:right;border:none;"></iframe>
+                <iframe id="terminal"></iframe>
             </div>
             <script>
                 var editor = ace.edit("editor");
                 editor.setTheme("ace/theme/monokai");
                 window.onresize=function() {
                     document.getElementById("editor").style.top = document.getElementById("container").offsetTop;
+                    document.getElementById("terminal").style.top = document.getElementById("container").offsetTop;
+                    document.getElementById("terminal").style.left = document.getElementById("editor").offsetWidth;
                 };
                 window.onresize();
                 function setLanguage(lang) {
