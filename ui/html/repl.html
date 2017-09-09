@@ -37,15 +37,19 @@
                 <script>
                     var editor = ace.edit("editor");
                     editor.setTheme("ace/theme/monokai");
-                    editor.getSession().setMode("ace/mode/javascript");
                     window.onresize=function() {
                         document.getElementById("editor").style.top = document.getElementById("container").offsetTop;
                     };
                     window.onresize();
+                    function setLanguage(lang) {
+                        editor.getSession().setMode("ace/mode/"+lang);
+                        document.getElementById("terminal").src="http://api.techmeowt.com/"+lang;
+                    }
+                    setLanguage("lua");
                 </script>
             </div>
-            <div class="col" style="width:35%;float:right;">
-                <iframe id="terminal" style="border:none;"></iframe>
+            <div class="col">
+                <iframe id="terminal" style="width:35%;float:right;border:none;"></iframe>
             </div>
         </div>
     </body>
