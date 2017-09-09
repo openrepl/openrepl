@@ -3,16 +3,14 @@
 NAME=$(mktemp -d)
 
 function cleanup() {
-    docker kill $(basename $NAME)
-    rm -r $NAME
+    docker kill $(basename $NAME) > /dev/null
+    rm -rf $NAME
 }
 
 trap cleanup EXIT
 
-set -x
-
 if [ $# -eq 2 ]; then
-    wget http://60s/get?id="$2" -O $NAME/script || exit 1
+    wget -q http://60s/get?id="$2" -O $NAME/script || exit 1
     DOCKERFLAGS=(-v "$NAME:$NAME")
     SARGS=($NAME/script)
 fi
