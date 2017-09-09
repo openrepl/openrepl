@@ -34,7 +34,7 @@ func main() {
 		if err != nil {
 			return
 		}
-		err = gz.Flush()
+		err = gz.Close()
 		if err != nil {
 			return
 		}
