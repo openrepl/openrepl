@@ -38,7 +38,7 @@
                         border: none;
                     }
                 </style>
-                <div id="buttons blue accent-4">
+                <div id="buttons" class="blue accent-4">
                     <button class="btn waves-effect waves-light" id="runbtn">
                         Run<i class="material-icons right">directions_run</i>
                     </button>
@@ -53,7 +53,7 @@
                 editor.setTheme("ace/theme/monokai");
                 editor.setFontSize(20);
                 window.onresize=function() {
-                    document.getElementById("editor").style.top = document.getElementById("container").offsetTop;
+                    document.getElementById("editor").style.top = document.getElementById("buttons").offsetTop;
                     document.getElementById("terminal").style.top = document.getElementById("container").offsetTop;
                     document.getElementById("terminal").style.left = document.getElementById("editor").offsetWidth;
                     document.getElementById("terminal").style.height = window.innerHeight - document.getElementById("container").offsetTop;
