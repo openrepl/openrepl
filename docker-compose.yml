@@ -16,3 +16,9 @@ services:
     - "/tmp:/tmp"
   60s:
     image: "openrepl/60s"
+  save:
+    image: "openrepl/save"
+    links:
+    - "60s"
+    volumes:
+    - "/srv/dat:/dat"

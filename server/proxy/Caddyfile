@@ -3,6 +3,9 @@ api.techmeowt.com:80 {
     proxy /60s/ 60s:80 {
         without /60s
     }
+    proxy /save/ save:80 {
+        without /save
+    }
     proxy / interactive:52 {
         websocket
         transparent
