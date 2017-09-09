@@ -36,6 +36,7 @@ func main() {
 		store[n] = buf.Bytes()
 		go func() {
 			time.Sleep(time.Minute)
+			log.Printf("deleting: %d\n", n)
 			lck.Lock()
 			defer lck.Unlock()
 			delete(store, n)
