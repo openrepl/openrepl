@@ -1,4 +1,4 @@
-langs = lua python2 python3 forth bash cpp javascript
+langs = lua python2 python3 forth bash cpp javascript php
 .PHONY: $(langs)
 all: $(langs)
 

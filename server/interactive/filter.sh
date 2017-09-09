@@ -3,7 +3,7 @@
 GOOD="false"
 
 
-for lang in lua python2 python3 forth cpp bash javascript; do
+for lang in lua python2 python3 forth cpp bash javascript php; do
     if [ "$1" == "$lang" ]; then
         GOOD="true"
     fi
