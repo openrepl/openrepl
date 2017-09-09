@@ -1,5 +1,5 @@
 if [ $# -ne 1 ]; then
-    php
+    php -a
 else
     mv "$1" script.php
     php script.php
