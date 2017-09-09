@@ -86,9 +86,14 @@
                         term2.style.height = window.innerHeight - (et + eh);
                     }
                 };
+                function clearTerm2() {
+                    termdiv.style.visibility = "hidden";
+                    window.onresize();
+                }
                 window.onresize();
                 var language = "lua"
                 function setLanguage(lang) {
+                    clearTerm2();
                     if(lang == "bash") {
                         editor.getSession().setMode("ace/mode/sh");
                     }else if(lang == "cpp") {
@@ -145,6 +150,7 @@
                 };
                 var loadbtn = document.getElementById("loadbtn")
                 loadbtn.onclick = function() {
+                    clearTerm2();
                     var id = prompt("Enter save ID")
                     if (id != null) {
                         var xhr = new XMLHttpRequest();
