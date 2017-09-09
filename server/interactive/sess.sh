@@ -12,7 +12,7 @@ trap cleanup EXIT
 set -x
 
 if [ $# -eq 2 ]; then
-    curl http://60s/get?id="$2" > $NAME/script || exit 1
+    wget http://60s/get?id="$2" -o $NAME/script || exit 1
     DOCKERFLAGS=(-v "$NAME:$NAME")
     SARGS=($NAME/script)
 fi
