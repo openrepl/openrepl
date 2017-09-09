@@ -18,7 +18,7 @@
     </header>
     <body>
         <div id="container" class="container">
-            <div class="col" width=65%>
+            <div class="col" width=65% style="float:left;">
                 <style>
                     #editor {
                         position: absolute;
@@ -39,7 +39,7 @@
                         border: none;
                     }
                 </style>
-                <div id="buttons" class="blue accent-4">
+                <div id="buttons" class="blue accent-4" style="position:absolute;left:0;right:0;">
                     <button class="btn waves-effect waves-light" id="runbtn">
                         Run<i class="material-icons right">directions_run</i>
                     </button>
@@ -58,6 +58,7 @@
                     document.getElementById("terminal").style.top = document.getElementById("container").offsetTop;
                     document.getElementById("terminal").style.left = document.getElementById("editor").offsetWidth;
                     document.getElementById("terminal").style.height = window.innerHeight - document.getElementById("container").offsetTop;
+                    document.getElementById("buttons").style.width = document.getElementById("editor").offsetWidth;
                 };
                 window.onresize();
                 var language = "lua"
