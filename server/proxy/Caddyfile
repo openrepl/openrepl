@@ -1,4 +1,5 @@
 api.techmeowt.com:80 {
+    proxy /60s 60s:80
     proxy / interactive:80 {
     }
 }

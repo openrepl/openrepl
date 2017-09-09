@@ -1,0 +1,15 @@
+version: '2'
+services:
+  proxy:
+    image: "openrepl/proxy"
+    ports:
+    - "80:80"
+    links:
+    - "interactive"
+    - "60s"
+  interactive:
+    image: "openrepl/interactive"
+    links:
+    - "60s"
+  60s:
+    image: "openrepl/60s"
