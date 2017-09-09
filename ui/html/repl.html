@@ -43,11 +43,15 @@
                     <button class="btn waves-effect waves-light" id="runbtn">
                         Run<i class="material-icons right">directions_run</i>
                     </button>
+                    <a class='dropdown-button btn' href='#' data-activates='langd'>Switch Language</a>
+                    <ul id='langd' class='dropdown-content'>
+                        <li><a id="lang-lua" href="#!">Lua</a></li>
+                        <li><a id="lang-python" href="#!">Python</a></li>
+                    </ul>
                 </div>
                 <div id="editor" class="editor"></div>
                 <div id="termdiv" style="visibility:hidden;">
-                    <div id="greybar" class="grey" class="editor"></div>
-                    <iframe id="term2" class="editor"></iframe>
+                    <iframe id="term2" class="editor" style="border:none;"></iframe>
                 </div>
             </div>
             <div class="col">
@@ -58,7 +62,6 @@
                 editor.setTheme("ace/theme/monokai");
                 editor.setFontSize(20);
                 var termdiv = document.getElementById("termdiv");
-                var greybar = document.getElementById("greybar");
                 var t2 = document.getElementById("term2");
                 window.onresize=function() {
                     document.getElementById("editor").style.top = document.getElementById("buttons").offsetTop + document.getElementById("buttons").offsetHeight;
@@ -70,10 +73,8 @@
                         var eh = 0.65 * window.innerHeight;
                         var et = document.getElementById("editor").offsetTop;
                         document.getElementById("editor").style.height = eh;
-                        greybar.style.top = et + eh;
-                        greybar.style.height = 10;
-                        term2.style.top = et + eh + 10;
-                        term2.style.height = window.innerHeight - (et + eh + 10);
+                        term2.style.top = et + eh;
+                        term2.style.height = window.innerHeight - (et + eh);
                     }
                 };
                 window.onresize();
@@ -88,7 +89,7 @@
                 runbtn.onclick = function() {
                     runbtn.classList.add("disabled");
                     var xhr = new XMLHttpRequest();
-                    xhr.open('PUT', "//api.techmeowt.com/60s/add", true);
+                    xhr.open('PUT', "http://api.techmeowt.com/60s/add", true);
                     xhr.send(editor.getValue());
                     xhr.onreadystatechange = function(e){
                         if (xhr.readyState == 4) {
@@ -101,10 +102,13 @@
                         }
                     };
                 };
-                greybar.onclick = function() {
-                    termdiv.style.visibility = "hidden";
-                    window.onresize();
-                };
+                function attachLang(l) {
+                    document.getElementById("lang-"+l).onclick = function() {
+                        setLanguage(l);
+                    };
+                }
+                attachLang("lua");
+                attachLang("python");
             </script>
         </div>
     </body>
