@@ -13,5 +13,6 @@ services:
     - "60s"
     volumes:
     - "/var/run/docker.sock:/var/run/docker.sock"
+    - "/tmp:/tmp"
   60s:
     image: "openrepl/60s"
