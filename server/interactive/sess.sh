@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NAME=$(mktemp -p /tmp XXXXXX)
+NAME=$(mktemp -d -p /tmp XXXXXX)
 
 function cleanup() {
     docker kill $(basename $NAME)
@@ -11,13 +11,10 @@ trap cleanup EXIT
 
 set -x
 
-rm -r $NAME
-touch $NAME
-
 if [ $# -eq 2 ]; then
-    curl http://60s/get?id="$2" > $NAME || exit 1
-    DOCKERFLAGS=(-v "$NAME:$NAME")
-    SARGS=($NAME)
+    curl http://60s/get?id="$2" > $NAME/script || exit 1
+    DOCKERFLAGS=(-v "$NAME:/in")
+    SARGS=(/in/script)
 fi
 
 bash filter.sh "$1" || exit 1
