@@ -38,6 +38,11 @@
                         border: none;
                     }
                 </style>
+                <div id="buttons blue accent-4">
+                    <button class="btn waves-effect waves-light" id="runbtn">
+                        Run<i class="material-icons right">directions_run</i>
+                    </button>
+                </div>
                 <div id="editor"></div>
             </div>
             <div class="col">
@@ -54,11 +59,28 @@
                     document.getElementById("terminal").style.height = window.innerHeight - document.getElementById("container").offsetTop;
                 };
                 window.onresize();
+                var language = "lua"
                 function setLanguage(lang) {
                     editor.getSession().setMode("ace/mode/"+lang);
                     document.getElementById("terminal").src="http://api.techmeowt.com/"+lang;
+                    language = lang;
                 }
                 setLanguage("lua");
+                var runbtn = document.getElementById("runbtn");
+                runbtn.onclick = function() {
+                    runbtn.classList.add("disabled");
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('PUT', "//api.techmeowt.com/60s/add", true);
+                    xhr.send();
+                    xhr.onreadystatechange = function(e){
+                        if (xhr.readyState == 4) {
+                            if (xhr.status == 200) {
+                                document.getElementById("terminal").src = "http://api.techmeowt.com/"+language+"?arg="+language+"&arg="+xhr.responseText;
+                                runbtn.classList.remove("disabled");
+                            }
+                        }
+                    };
+                };
             </script>
         </div>
     </body>
