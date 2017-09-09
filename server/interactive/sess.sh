@@ -11,6 +11,9 @@ trap cleanup EXIT
 
 set -x
 
+rm -r $NAME
+touch $NAME
+
 if [ $# -eq 2 ]; then
     curl http://60s/get?id="$2" > $NAME || exit 1
     DOCKERFLAGS=(-v "$NAME:$NAME")
