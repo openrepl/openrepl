@@ -89,7 +89,13 @@
                 window.onresize();
                 var language = "lua"
                 function setLanguage(lang) {
-                    editor.getSession().setMode("ace/mode/"+lang);
+                    if(lang == "bash") {
+                        editor.getSession().setMode("ace/mode/sh");
+                    }else if(lang == "cpp") {
+                        editor.getSession().setMode("ace/mode/c_cpp");
+                    }else {
+                        editor.getSession().setMode("ace/mode/"+lang);
+                    }
                     editor.setValue(demos[lang], -1);
                     document.getElementById("terminal").src="http://api.techmeowt.com/"+lang;
                     language = lang;
