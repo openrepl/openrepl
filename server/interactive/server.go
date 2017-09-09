@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	langs := strings.Split("lua python", " ")
+	langs := strings.Split("lua python forth", " ")
 	rp := func(str string) {
 		http.HandleFunc("/"+str, func(w http.ResponseWriter, r *http.Request) {
 			g, err := http.Get((&url.URL{Scheme: "http", Host: "localhost:65", Path: str}).String())

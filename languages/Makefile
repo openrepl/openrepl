@@ -1,4 +1,4 @@
-langs = lua python
+langs = lua python forth
 .PHONY: $(langs)
 all: $(langs)
 
