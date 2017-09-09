@@ -93,7 +93,7 @@
                             if (xhr.status == 200) {
                                 term2.src = "http://api.techmeowt.com/"+language+"?arg="+language+"&arg="+xhr.responseText;
                                 termdiv.style.visibility = "visible";
-                                greybar.onclick();
+                                window.onresize();
                                 runbtn.classList.remove("disabled");
                             }
                         }
