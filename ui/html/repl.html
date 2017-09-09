@@ -46,6 +46,7 @@
             <script>
                 var editor = ace.edit("editor");
                 editor.setTheme("ace/theme/monokai");
+                editor.setFontSize(14);
                 window.onresize=function() {
                     document.getElementById("editor").style.top = document.getElementById("container").offsetTop;
                     document.getElementById("terminal").style.top = document.getElementById("container").offsetTop;
