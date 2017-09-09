@@ -20,7 +20,7 @@
         <div id="container" class="container">
             <div class="col" width=65% style="float:left;">
                 <style>
-                    #editor {
+                    .editor {
                         position: absolute;
                         top: 0;
                         left: 0;
@@ -28,7 +28,7 @@
                         right: 0;
                         width: 65%;
                     }
-                    #terminal {
+                    .terminal {
                         position: absolute;
                         top: 0;
                         left: 0;
@@ -44,21 +44,35 @@
                         Run<i class="material-icons right">directions_run</i>
                     </button>
                 </div>
-                <div id="editor"></div>
+                <div id="editor" class="editor"></div>
             </div>
             <div class="col">
-                <iframe id="terminal"></iframe>
+                <iframe id="terminal" class="terminal"></iframe>
+                <div id="termdiv" style="visibility:hidden;">
+                    <div id="greybar" class="grey" class="editor"></div>
+                    <iframe id="term2" class="editor"></iframe>
+                </div>
             </div>
             <script>
                 var editor = ace.edit("editor");
                 editor.setTheme("ace/theme/monokai");
                 editor.setFontSize(20);
+                var termdiv = document.getElementById("termdiv");
+                var greybar = document.getElementById("greybar");
+                var t2 = document.getElementById("term2");
                 window.onresize=function() {
                     document.getElementById("editor").style.top = document.getElementById("buttons").offsetTop + document.getElementById("buttons").offsetHeight;
                     document.getElementById("terminal").style.top = document.getElementById("container").offsetTop;
                     document.getElementById("terminal").style.left = document.getElementById("editor").offsetWidth;
                     document.getElementById("terminal").style.height = window.innerHeight - document.getElementById("container").offsetTop;
                     document.getElementById("buttons").style.width = document.getElementById("editor").offsetWidth;
+                    if(termdiv.style.visibility == "visible") {
+                        greybar.height = 10;
+                        greybar.top = window.innerHeight - (window.innerHeight / 5);
+                        document.getElementById("terminal").style.height -= window.innerHeight / 5;
+                        term2.top = greybar.top + greybar.height;
+                        term2.height = window.innerHeight - term2.top;
+                    }
                 };
                 window.onresize();
                 var language = "lua"
@@ -77,11 +91,17 @@
                     xhr.onreadystatechange = function(e){
                         if (xhr.readyState == 4) {
                             if (xhr.status == 200) {
-                                document.getElementById("terminal").src = "http://api.techmeowt.com/"+language+"?arg="+language+"&arg="+xhr.responseText;
+                                term2.src = "http://api.techmeowt.com/"+language+"?arg="+language+"&arg="+xhr.responseText;
+                                termdiv.style.visibility = "visible";
+                                greybar.onclick();
                                 runbtn.classList.remove("disabled");
                             }
                         }
                     };
+                };
+                greybar.onclick = function() {
+                    termdiv.style.visibility = "hidden";
+                    window.onresize();
                 };
             </script>
         </div>
