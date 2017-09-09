@@ -11,13 +11,18 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/rs/cors"
 )
 
 func main() {
 	store := make(map[uint64][]byte)
 	var n uint64
 	var lck sync.Mutex
-	http.HandleFunc("/add", func(w http.ResponseWriter, r *http.Request) {
+	http.Handle("/add", cors.New(cors.Options{
+		AllowedMethods:   []string{"PUT"},
+		AllowCredentials: true,
+	}).Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPut {
 			http.Error(w, "Not a put", http.StatusBadRequest)
 			log.Printf("Incorrect method %s\n", r.Method)
@@ -44,8 +49,11 @@ func main() {
 		}()
 		w.Write([]byte(fmt.Sprint(n)))
 		n++
-	})
-	http.HandleFunc("/get", func(w http.ResponseWriter, r *http.Request) {
+	})))
+	http.Handle("/get", cors.New(cors.Options{
+		AllowedMethods:   []string{"GET"},
+		AllowCredentials: true,
+	}).Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		if err != nil {
 			http.Error(w, "Form parse error", http.StatusBadRequest)
@@ -80,6 +88,6 @@ func main() {
 		} else {
 			io.Copy(w, bytes.NewBuffer(dat))
 		}
-	})
+	})))
 	http.ListenAndServe(":80", nil)
 }
