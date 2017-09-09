@@ -1,0 +1,8 @@
+api.techmeowt.com:80 {
+    proxy / interactive:80 {
+    }
+}
+
+repl.techmeowt.com:80 {
+    root /web
+}
