@@ -70,8 +70,8 @@
                         document.getElementById("editor").style.height -= 0.65*innerHeight;
                         greybar.style.top = document.getElementById("editor").style.top + document.getElementById("editor").style.height;
                         greybar.style.height = 10;
-                        term2.style.top = greybar.style.top + greybar.style.height;
-                        term2.style.height = window.innerHeight - term2.style.top;
+                        term2.style.top = greybar.style.offsetTop + greybar.style.offsetHeight;
+                        term2.style.height = window.innerHeight - term2.style.offsetTop;
                     }
                 };
                 window.onresize();
