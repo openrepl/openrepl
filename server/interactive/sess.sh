@@ -13,8 +13,8 @@ set -x
 
 if [ $# -eq 2 ]; then
     curl http://60s/get?id="$2" > $NAME || exit 1
-    DOCKERFLAGS=(-v "$NAME:/script")
-    SARGS=(/script)
+    DOCKERFLAGS=(-v "$NAME:/tmp/script")
+    SARGS=(/tmp/script)
 fi
 
 bash filter.sh "$1" || exit 1
