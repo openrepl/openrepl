@@ -67,9 +67,9 @@
                     document.getElementById("terminal").style.height = window.innerHeight - document.getElementById("container").offsetTop;
                     document.getElementById("buttons").style.width = document.getElementById("editor").offsetWidth;
                     if(termdiv.style.visibility == "visible") {
+                        document.getElementById("terminal").style.height -= 0.65*innerHeight;
+                        greybar.style.top = document.getElementById("terminal").style.top + document.getElementById("terminal").style.height;
                         greybar.style.height = 10;
-                        greybar.style.top = window.innerHeight * (4.0 / 5);
-                        document.getElementById("terminal").style.height -= window.innerHeight / 5;
                         term2.style.top = greybar.style.top + greybar.style.height;
                         //term2.style.height = window.innerHeight - term2.style.top;
                     }
