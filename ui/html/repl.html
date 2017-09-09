@@ -34,23 +34,23 @@
                         return x;
                     }
                 </div>
-                <script>
-                    var editor = ace.edit("editor");
-                    editor.setTheme("ace/theme/monokai");
-                    window.onresize=function() {
-                        document.getElementById("editor").style.top = document.getElementById("container").offsetTop;
-                    };
-                    window.onresize();
-                    function setLanguage(lang) {
-                        editor.getSession().setMode("ace/mode/"+lang);
-                        document.getElementById("terminal").src="http://api.techmeowt.com/"+lang;
-                    }
-                    setLanguage("lua");
-                </script>
             </div>
             <div class="col">
                 <iframe id="terminal" style="width:35%;float:right;border:none;"></iframe>
             </div>
+            <script>
+                var editor = ace.edit("editor");
+                editor.setTheme("ace/theme/monokai");
+                window.onresize=function() {
+                    document.getElementById("editor").style.top = document.getElementById("container").offsetTop;
+                };
+                window.onresize();
+                function setLanguage(lang) {
+                    editor.getSession().setMode("ace/mode/"+lang);
+                    document.getElementById("terminal").src="http://api.techmeowt.com/"+lang;
+                }
+                setLanguage("lua");
+            </script>
         </div>
     </body>
 </html>
