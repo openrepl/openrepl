@@ -5,4 +5,5 @@ var demos = {
     forth: '1 1 + .',
     bash: 'echo "Hello World!"',
     cpp: '#include<stdio.h>\n\nint main() {\n\tprintf("Hello World!");\n}',
+    javascript: 'console.log("Hello world");',
 };
