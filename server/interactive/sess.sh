@@ -19,4 +19,4 @@ fi
 
 bash filter.sh "$1" || exit 1
 
-docker run $DOCKERFLAGS --name $(basename $NAME) -it --rm -m 64m openrepl/$1 $SARGS
+docker run ${DOCKERFLAGS[*]} --name $(basename $NAME) -it --rm -m 64m openrepl/$1 $SARGS
