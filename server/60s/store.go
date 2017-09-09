@@ -2,13 +2,11 @@ package main
 
 import (
 	"bytes"
-	"compress/gzip"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -29,12 +27,7 @@ func main() {
 			return
 		}
 		buf := bytes.NewBuffer(nil)
-		gz := gzip.NewWriter(buf)
-		_, err := io.Copy(gz, r.Body)
-		if err != nil {
-			return
-		}
-		err = gz.Close()
+		_, err := io.Copy(buf, r.Body)
 		if err != nil {
 			return
 		}
@@ -78,16 +71,7 @@ func main() {
 			http.Error(w, "Data gone", http.StatusGone)
 			return
 		}
-		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
-			buf := bytes.NewBuffer(dat)
-			gzr, err := gzip.NewReader(buf)
-			if err != nil {
-				return
-			}
-			io.Copy(w, gzr)
-		} else {
-			io.Copy(w, bytes.NewBuffer(dat))
-		}
+		io.Copy(w, bytes.NewBuffer(dat))
 	})))
 	http.ListenAndServe(":80", nil)
 }
