@@ -46,7 +46,6 @@
                     <button class="btn waves-effect waves-light" id="loadbtn">
                         Load<i class="material-icons right">cloud_download</i>
                     </button>
-                    <p id="savelnk" class="flow-text"></p>
                     <a class='dropdown-button btn' href='#' data-activates='langd'>Switch Language</a>
                     <ul id='langd' class='dropdown-content'>
                         <li><a id="lang-lua" href="#!">Lua</a></li>
@@ -54,6 +53,7 @@
                         <li><a id="lang-python3" href="#!">Python 3</a></li>
                         <li><a id="lang-forth" href="#!">Forth</a></li>
                     </ul>
+                    <span id="savelnk" class="flow-text"></span>
                 </div>
                 <div id="editor" class="editor"></div>
                 <div id="termdiv" style="visibility:hidden;">
@@ -123,7 +123,7 @@
                                 x2.onreadystatechange = function() {
                                     if(x2.readyState == 4) {
                                         if(x2.status == 200) {
-                                            document.getElementById("savelnk").innerHTML = x2.responseText;
+                                            document.getElementById("savelnk").innerHTML = "Save ID: " + x2.responseText;
                                             savebtn.classList.remove("disabled");
                                         }
                                     }
