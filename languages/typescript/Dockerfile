@@ -1,3 +1,4 @@
 FROM frapsoft/ts-node
 
-ENTRYPOINT ["ts-node"]
+ADD runts.sh runts.sh
+ENTRYPOINT ["sh","runts.sh"]
