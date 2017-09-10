@@ -9,6 +9,8 @@ function cleanup() {
 
 trap cleanup EXIT
 
+DOCKERFLAGS=()
+
 if [ $# -eq 2 ]; then
     wget -q http://60s/get?id="$2" -O $NAME/script || exit 1
     DOCKERFLAGS=(-v "$NAME:$NAME")
@@ -17,4 +19,10 @@ fi
 
 bash filter.sh "$1" || exit 1
 
-docker run ${DOCKERFLAGS[*]} --name $(basename $NAME) -it --rm -m 64m openrepl/$1 $SARGS 2> /dev/null
+if [ "$1" == typescript ]; then
+    DOCKERFLAGS+=(-m 128m)
+else
+    DOCKERFLAGS+=(-m 64m)
+fi
+
+docker run ${DOCKERFLAGS[*]} --name $(basename $NAME) -it --rm openrepl/$1 $SARGS 2> /dev/null
