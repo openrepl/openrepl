@@ -7,4 +7,5 @@ var demos = {
     cpp: '#include<stdio.h>\n\nint main() {\n\tprintf("Hello World!");\n}',
     javascript: 'console.log("Hello world");',
     php: '<?php print "Hello World!"; ?>',
+    typescript: 'console.log("Hello, world!");',
 };
