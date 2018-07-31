@@ -1,5 +1,5 @@
-FROM panux/panux:x86_64
+FROM alpine:3.7
 
-RUN lpkg install lua
+RUN apk add --no-cache lua
 
 ENTRYPOINT ["lua"]

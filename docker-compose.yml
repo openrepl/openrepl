@@ -3,7 +3,7 @@ services:
   proxy:
     image: "openrepl/proxy"
     ports:
-    - "80:80"
+    - "8007:80"
     links:
     - "interactive"
     - "60s"

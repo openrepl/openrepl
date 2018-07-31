@@ -36,6 +36,7 @@ func main() {
 			args := r.URL.Query()["arg"]
 			if len(args) < 1 || args[0] != l {
 				r.URL.RawQuery = "arg=" + l
+				r.URL.Path = "/api/" + r.URL.Path
 				http.Redirect(w, r, r.URL.String(), http.StatusTemporaryRedirect)
 				return
 			}

@@ -1,18 +1,16 @@
-api.techmeowt.com:80 {
-    header / Access-Control-Allow-Origin *
-    proxy /60s/ 60s:80 {
-        without /60s
+:80 {
+    root /web
+    index repl.html
+    header /api/ Access-Control-Allow-Origin *
+    proxy /api/60s/ 60s:80 {
+        without /api/60s
     }
-    proxy /save/ save:80 {
-        without /save
+    proxy /api/save/ save:80 {
+        without /api/save
     }
-    proxy / interactive:52 {
+    proxy /api/ interactive:52 {
+        without /api
         websocket
         transparent
     }
-}
-
-repl.techmeowt.com:80 {
-    root /web
-    index repl.html
 }
