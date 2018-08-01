@@ -74,6 +74,9 @@
                 <iframe id="terminal" class="terminal"></iframe>
             </div>
             <script>
+                var runbtn = document.getElementById("runbtn");
+                var savebtn = document.getElementById("savebtn");
+                var loadbtn = document.getElementById("loadbtn");
                 ace.require("ace/ext/language_tools");
                 var editor = ace.edit("editor");
                 editor.setTheme("ace/theme/monokai");
@@ -83,6 +86,39 @@
                     enableLiveAutocompletion: true,
                     copyWithEmptySelection: true,
                     fadeFoldWidgets: true
+                });
+                editor.commands.addCommand({
+                    name: 'save',
+                    bindKey: {
+                        win: 'Ctrl-S',
+                        mac: 'Command-S',
+                        sender: 'editor'
+                    },
+                    exec: function(env, args, request) {
+                        savebtn.click();
+                    }
+                });
+                editor.commands.addCommand({
+                    name: 'open',
+                    bindKey: {
+                        win: 'Ctrl-O',
+                        mac: 'Command-O',
+                        sender: 'editor'
+                    },
+                    exec: function(env, args, request) {
+                        loadbtn.click();
+                    }
+                });
+                editor.commands.addCommand({
+                    name: 'run',
+                    bindKey: {
+                        win: 'Ctrl-R',
+                        mac: 'Command-R',
+                        sender: 'editor'
+                    },
+                    exec: function(env, args, request) {
+                        runbtn.click();
+                    }
                 });
                 var termdiv = document.getElementById("termdiv");
                 var t2 = document.getElementById("term2");
@@ -101,7 +137,7 @@
                     }
                 };
                 window.onresize();
-                var language = "lua"
+                var language = "lua";
                 function setLanguage(lang) {
                     if(lang == "bash") {
                         editor.getSession().setMode("ace/mode/sh");
@@ -115,7 +151,6 @@
                     language = lang;
                 }
                 setLanguage("lua");
-                var runbtn = document.getElementById("runbtn");
                 runbtn.onclick = function() {
                     runbtn.classList.add("disabled");
                     var xhr = new XMLHttpRequest();
@@ -132,7 +167,6 @@
                         }
                     };
                 };
-                var savebtn = document.getElementById("savebtn");
                 savebtn.onclick = function() {
                     savebtn.classList.add("disabled");
                     var xhr = new XMLHttpRequest();
@@ -157,9 +191,8 @@
                         }
                     };
                 };
-                var loadbtn = document.getElementById("loadbtn")
                 loadbtn.onclick = function() {
-                    var id = prompt("Enter save ID")
+                    var id = prompt("Enter save ID");
                     if (id != null) {
                         var xhr = new XMLHttpRequest();
                         xhr.open('GET', "/api/save/get?id="+id, true);
