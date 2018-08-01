@@ -80,8 +80,10 @@
                 editor.setFontSize(20);
                 editor.setOptions({
                     enableBasicAutocompletion: true,
-                    enableLiveAutocompletion: true
-                })
+                    enableLiveAutocompletion: true,
+                    copyWithEmptySelection: true,
+                    fadeFoldWidgets: true
+                });
                 var termdiv = document.getElementById("termdiv");
                 var t2 = document.getElementById("term2");
                 window.onresize=function() {
