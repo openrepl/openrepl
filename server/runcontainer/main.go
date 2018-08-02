@@ -91,7 +91,7 @@ func (c *Container) Close(ctx context.Context) error {
 }
 
 // Deploy deploys a container with this configuration.
-func (cc ContainerConfig) Deploy(ctx context.Context, cli *client.Client) (cont *Container, err error) {
+func (cc ContainerConfig) Deploy(ctx context.Context, cli *client.Client, prestart func(*Container) error) (cont *Container, err error) {
 	/*
 		    // pull image
 			err = cc.pullImg(ctx, cli)
@@ -126,6 +126,19 @@ func (cc ContainerConfig) Deploy(ctx context.Context, cli *client.Client) (cont 
 		}
 	}()
 
+	cont = &Container{
+		cli: cli,
+		ID:  c.ID,
+	}
+
+	// run prestart hook
+	if prestart != nil {
+		err = prestart(cont)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	// start container
 	err = cli.ContainerStart(ctx, c.ID, types.ContainerStartOptions{})
 	if err != nil {
@@ -144,12 +157,9 @@ func (cc ContainerConfig) Deploy(ctx context.Context, cli *client.Client) (cont 
 
 	// convert to websocket
 	ws := websocket.NewConnWithExisting(resp.Conn, false, 0, 0)
+	cont.IO = ws
 
-	return &Container{
-		cli: cli,
-		ID:  c.ID,
-		IO:  ws,
-	}, nil
+	return cont, nil
 }
 
 // Language is a configuration for a programming language.
@@ -224,7 +234,7 @@ func (cs *ContainerServer) HandleTerminal(w http.ResponseWriter, r *http.Request
 	// deploy container with 1 min timeout
 	startctx, startcancel := context.WithTimeout(context.Background(), time.Minute)
 	defer startcancel()
-	c, err := lang.TermContainer.Deploy(startctx, cs.DockerClient)
+	c, err := lang.TermContainer.Deploy(startctx, cs.DockerClient, nil)
 	if err != nil {
 		conn.WriteJSON(StatusUpdate{Status: "error", Error: err.Error()})
 		err = conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
@@ -315,8 +325,8 @@ func (cs *ContainerServer) HandleRun(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
-	// send status "starting"
-	err = conn.WriteJSON(StatusUpdate{Status: "starting"})
+	// send status "creating"
+	err = conn.WriteJSON(StatusUpdate{Status: "creating"})
 	if err != nil {
 		return
 	}
@@ -324,7 +334,46 @@ func (cs *ContainerServer) HandleRun(w http.ResponseWriter, r *http.Request) {
 	// deploy container with 1 min timeout
 	startctx, startcancel := context.WithTimeout(context.Background(), time.Minute)
 	defer startcancel()
-	c, err := lang.RunContainer.Deploy(startctx, cs.DockerClient)
+	c, err := lang.RunContainer.Deploy(startctx, cs.DockerClient, func(c *Container) error {
+		// update status to ready
+		err := conn.WriteJSON(StatusUpdate{Status: "ready"})
+		if err != nil {
+			return err
+		}
+
+		// accept user code
+		t, dat, err := conn.ReadMessage()
+		if err != nil {
+			return err
+		}
+		if t != websocket.BinaryMessage && t != websocket.TextMessage {
+			log.Println("Client sent invalid message type")
+			return err
+		}
+
+		// update status to uploading
+		err = conn.WriteJSON(StatusUpdate{Status: "uploading"})
+		if err != nil {
+			return err
+		}
+
+		// send code to Docker
+		tr := packCodeTarball(dat)
+		err = c.cli.CopyToContainer(startctx, c.ID, "/", tr, types.CopyToContainerOptions{})
+		tr.Close()
+		if err != nil {
+			conn.WriteJSON(StatusUpdate{Status: "error", Error: err.Error()})
+			return err
+		}
+
+		// update status to starting
+		err = conn.WriteJSON(StatusUpdate{Status: "starting"})
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 	if err != nil {
 		conn.WriteJSON(StatusUpdate{Status: "error", Error: err.Error()})
 		err = conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
@@ -354,36 +403,6 @@ func (cs *ContainerServer) HandleRun(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Failed to stop container %q: %s", c.ID, cerr)
 		}
 	}()
-
-	// update status to ready
-	err = conn.WriteJSON(StatusUpdate{Status: "ready"})
-	if err != nil {
-		return
-	}
-
-	// accept user code
-	t, dat, err := conn.ReadMessage()
-	if err != nil {
-		return
-	}
-	if t != websocket.BinaryMessage && t != websocket.TextMessage {
-		log.Println("Client sent invalid message type")
-	}
-
-	// update status to uploading
-	err = conn.WriteJSON(StatusUpdate{Status: "uploading"})
-	if err != nil {
-		return
-	}
-
-	// send code to Docker
-	tr := packCodeTarball(dat)
-	err = c.cli.CopyToContainer(startctx, c.ID, "/", tr, types.CopyToContainerOptions{})
-	tr.Close()
-	if err != nil {
-		conn.WriteJSON(StatusUpdate{Status: "error", Error: err.Error()})
-		return
-	}
 
 	// update status to running
 	err = conn.WriteJSON(StatusUpdate{Status: "running"})
