@@ -140,12 +140,6 @@ func (cc ContainerConfig) Deploy(ctx context.Context, cli *client.Client, presta
 		}
 	}
 
-	// start container
-	err = cli.ContainerStart(ctx, c.ID, types.ContainerStartOptions{})
-	if err != nil {
-		return nil, err
-	}
-
 	// attach to container
 	resp, err := cli.ContainerAttach(ctx, c.ID, types.ContainerAttachOptions{
 		Stream: true,
@@ -153,6 +147,12 @@ func (cc ContainerConfig) Deploy(ctx context.Context, cli *client.Client, presta
 		Stdout: true,
 		Stderr: true,
 	})
+	if err != nil {
+		return nil, err
+	}
+
+	// start container
+	err = cli.ContainerStart(ctx, c.ID, types.ContainerStartOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -294,7 +294,7 @@ func (cs *ContainerServer) HandleTerminal(w http.ResponseWriter, r *http.Request
 
 			log.Println(hex.Dump(buf[:n]))
 
-			err = conn.WriteMessage(websocket.BinaryMessage, buf[:n])
+			err = conn.WriteMessage(websocket.TextMessage, buf[:n])
 			if err != nil {
 				return
 			}
@@ -470,7 +470,7 @@ func (cs *ContainerServer) HandleRun(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			err = conn.WriteMessage(websocket.BinaryMessage, buf[:n])
+			err = conn.WriteMessage(websocket.TextMessage, buf[:n])
 			if err != nil {
 				return
 			}

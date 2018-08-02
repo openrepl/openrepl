@@ -13,13 +13,23 @@ var term1 = new Terminal({
 term1.open(document.getElementById("terminal"));
 //term2.open(document.getElementById("term2"));
 var t1ws;
+var t1c = true;
 function updateT1WS(ws) {
-    if(t1ws) t1ws.close();
     t1ws = ws;
-    ws.onclose = function() { term1.detach(ws); };
-    term1.attach(ws);
+    t1c = false;
+    ws.onclose = function() {
+        term1.detach(ws);
+        t1c = true;
+    };
+    term1.attach(ws, true, true);
 }
 function loadTerm1(lang) {
+    if(!t1c) {
+        t1ws.onclose = function() {};
+        term1.detach(t1ws);
+        t1ws.close();
+    }
+    term1.reset();
     openrepl.term(lang).then((ws) => updateT1WS(ws), (e) => console.log(e));
 }
 var runbtn = document.getElementById("runbtn");
