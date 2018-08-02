@@ -16,7 +16,7 @@ var t1ws;
 function updateT1WS(ws) {
     if(t1ws) t1ws.close();
     t1ws = ws;
-    ws.onclose = () => term1.detach(ws);
+    ws.onclose = function() { term1.detach(ws); };
     term1.attach(ws);
 }
 function loadTerm1(lang) {

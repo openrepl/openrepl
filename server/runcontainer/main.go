@@ -3,6 +3,7 @@ package main
 import (
 	"archive/tar"
 	"context"
+	"encoding/hex"
 	"encoding/json"
 	"io"
 	"log"
@@ -66,7 +67,7 @@ func (cc ContainerConfig) pullImg(ctx context.Context, cli *client.Client) (err 
 type Container struct {
 	cli *client.Client
 	ID  string
-	IO  *websocket.Conn
+	IO  io.ReadWriteCloser
 }
 
 // Close closes and removes the container.
@@ -147,6 +148,7 @@ func (cc ContainerConfig) Deploy(ctx context.Context, cli *client.Client, presta
 
 	// attach to container
 	resp, err := cli.ContainerAttach(ctx, c.ID, types.ContainerAttachOptions{
+		Stream: true,
 		Stdin:  true,
 		Stdout: true,
 		Stderr: true,
@@ -156,8 +158,7 @@ func (cc ContainerConfig) Deploy(ctx context.Context, cli *client.Client, presta
 	}
 
 	// convert to websocket
-	ws := websocket.NewConnWithExisting(resp.Conn, false, 0, 0)
-	cont.IO = ws
+	cont.IO = resp.Conn
 
 	return cont, nil
 }
@@ -281,8 +282,45 @@ func (cs *ContainerServer) HandleTerminal(w http.ResponseWriter, r *http.Request
 
 	// bridge connections
 	runctx, cancel := context.WithCancel(context.Background())
-	go copyWebSocket(conn, c.IO, cancel, 1)
-	go copyWebSocket(c.IO, conn, cancel, 2)
+	go func() { // output
+		defer cancel()
+		buf := make([]byte, 1024)
+		for {
+			n, err := c.IO.Read(buf)
+			log.Println(n, err)
+			if err != nil {
+				return
+			}
+
+			log.Println(hex.Dump(buf[:n]))
+
+			err = conn.WriteMessage(websocket.BinaryMessage, buf[:n])
+			if err != nil {
+				return
+			}
+		}
+	}()
+	go func() { // input
+		defer cancel()
+		for {
+			t, r, err := conn.NextReader()
+			if err != nil {
+				return
+			}
+			switch t {
+			case websocket.TextMessage:
+				fallthrough
+			case websocket.BinaryMessage:
+				_, err = io.Copy(c.IO, r)
+				if err != nil {
+					return
+				}
+			case websocket.CloseMessage:
+				return
+			}
+		}
+	}()
+	//go copyWebSocket(c.IO, conn, cancel, 2)
 	log.Println("Copying")
 	<-runctx.Done()
 	log.Println("Done")
@@ -422,8 +460,42 @@ func (cs *ContainerServer) HandleRun(w http.ResponseWriter, r *http.Request) {
 
 	// bridge connections
 	runctx, cancel := context.WithCancel(context.Background())
-	go copyWebSocket(conn, c.IO, cancel, 1)
-	go copyWebSocket(c.IO, conn, cancel, 2)
+	go func() { // output
+		defer cancel()
+		buf := make([]byte, 1024)
+		for {
+			n, err := c.IO.Read(buf)
+			log.Println(n, err)
+			if err != nil {
+				return
+			}
+
+			err = conn.WriteMessage(websocket.BinaryMessage, buf[:n])
+			if err != nil {
+				return
+			}
+		}
+	}()
+	go func() { // input
+		defer cancel()
+		for {
+			t, r, err := conn.NextReader()
+			if err != nil {
+				return
+			}
+			switch t {
+			case websocket.TextMessage:
+				fallthrough
+			case websocket.BinaryMessage:
+				_, err = io.Copy(c.IO, r)
+				if err != nil {
+					return
+				}
+			case websocket.CloseMessage:
+				return
+			}
+		}
+	}()
 	log.Println("Copying")
 	<-runctx.Done()
 	log.Println("Done")

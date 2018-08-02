@@ -2,91 +2,91 @@
     "lua": {
         "term": {
             "image": "openrepl/lua",
-            "cmd": ["lua"]
+            "cmd": []
         },
         "run": {
             "image": "openrepl/lua",
-            "cmd": ["lua", "/code"]
+            "cmd": ["/code"]
         }
     },
     "bash": {
         "term": {
             "image": "openrepl/bash",
-            "cmd": ["bash"]
+            "cmd": []
         },
         "run": {
             "image": "openrepl/bash",
-            "cmd": ["bash","/code"]
+            "cmd": ["/code"]
         }
     },
     "cpp": {
         "term": {
             "image": "openrepl/cpp",
-            "cmd": ["cling"]
+            "cmd": []
         },
         "run": {
             "image": "openrepl/cpp",
-            "cmd": ["sh","-e","cp /code /code.cpp && clang++ /code.cpp -o /code.o && /code.o"]
+            "cmd": ["/code"]
         }
     },
     "forth": {
         "term": {
             "image": "openrepl/forth",
-            "cmd": ["gforth"]
+            "cmd": []
         },
         "run": {
             "image": "openrepl/forth",
-            "cmd": ["gforth","/code","-e","bye"]
+            "cmd": ["/code"]
         }
     },
     "javascript": {
         "term": {
             "image": "openrepl/javascript",
-            "cmd": ["node"]
+            "cmd": []
         },
         "run": {
             "image": "openrepl/javascript",
-            "cmd": ["node", "/code"]
+            "cmd": ["/code"]
         }
     },
     "typescript": {
         "term": {
             "image": "openrepl/typescript",
-            "cmd": ["ts-node"]
+            "cmd": []
         },
         "run": {
             "image": "openrepl/typescript",
-            "cmd": ["ts-node", "/code"]
+            "cmd": ["/code"]
         }
     },
     "python2": {
         "term": {
             "image": "openrepl/python2",
-            "cmd": ["python"]
+            "cmd": []
         },
         "run": {
             "image": "openrepl/python2",
-            "cmd": ["python", "/code"]
+            "cmd": ["/code"]
         }
     },
     "python3": {
         "term": {
             "image": "openrepl/python3",
-            "cmd": ["python"]
+            "cmd": []
         },
         "run": {
             "image": "openrepl/python3",
-            "cmd": ["python", "/code"]
+            "cmd": ["/code"]
         }
     },
     "php": {
         "term": {
             "image": "openrepl/php",
-            "cmd": ["php","-a"]
+            "cmd": []
         },
         "run": {
             "image": "openrepl/php",
-            "cmd": ["php", "/code"]
+            "cmd": ["/code"]
         }
     }
 }
