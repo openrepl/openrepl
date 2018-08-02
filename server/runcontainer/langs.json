@@ -1,0 +1,92 @@
+{
+    "lua": {
+        "term": {
+            "image": "openrepl/lua",
+            "cmd": ["lua"]
+        },
+        "run": {
+            "image": "openrepl/lua",
+            "cmd": ["lua", "/code"]
+        }
+    },
+    "bash": {
+        "term": {
+            "image": "openrepl/bash",
+            "cmd": ["bash"]
+        },
+        "run": {
+            "image": "openrepl/bash",
+            "cmd": ["bash","/code"]
+        }
+    },
+    "cpp": {
+        "term": {
+            "image": "openrepl/cpp",
+            "cmd": ["cling"]
+        },
+        "run": {
+            "image": "openrepl/cpp",
+            "cmd": ["sh","-e","cp /code /code.cpp && clang++ /code.cpp -o /code.o && /code.o"]
+        }
+    },
+    "forth": {
+        "term": {
+            "image": "openrepl/forth",
+            "cmd": ["gforth"]
+        },
+        "run": {
+            "image": "openrepl/forth",
+            "cmd": ["gforth","/code","-e","bye"]
+        }
+    },
+    "javascript": {
+        "term": {
+            "image": "openrepl/javascript",
+            "cmd": ["node"]
+        },
+        "run": {
+            "image": "openrepl/javascript",
+            "cmd": ["node", "/code"]
+        }
+    },
+    "typescript": {
+        "term": {
+            "image": "openrepl/typescript",
+            "cmd": ["ts-node"]
+        },
+        "run": {
+            "image": "openrepl/typescript",
+            "cmd": ["ts-node", "/code"]
+        }
+    },
+    "python2": {
+        "term": {
+            "image": "openrepl/python2",
+            "cmd": ["python"]
+        },
+        "run": {
+            "image": "openrepl/python2",
+            "cmd": ["python", "/code"]
+        }
+    },
+    "python3": {
+        "term": {
+            "image": "openrepl/python3",
+            "cmd": ["python"]
+        },
+        "run": {
+            "image": "openrepl/python3",
+            "cmd": ["python", "/code"]
+        }
+    },
+    "php": {
+        "term": {
+            "image": "openrepl/php",
+            "cmd": ["php","-a"]
+        },
+        "run": {
+            "image": "openrepl/php",
+            "cmd": ["php", "/code"]
+        }
+    }
+}

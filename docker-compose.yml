@@ -7,10 +7,16 @@ services:
     links:
     - "interactive"
     - "60s"
+    - "runcontainer"
   interactive:
     image: "openrepl/interactive"
     links:
     - "60s"
+    volumes:
+    - "/var/run/docker.sock:/var/run/docker.sock"
+    - "/tmp:/tmp"
+  runcontainer:
+    image: "openrepl/runcontainer"
     volumes:
     - "/var/run/docker.sock:/var/run/docker.sock"
     - "/tmp:/tmp"

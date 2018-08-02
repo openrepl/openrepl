@@ -1,6 +1,6 @@
-all: interactive 60s proxy save
+all: interactive 60s proxy save runcontainer
 
-.PHONY: interactive 60s proxy save
+.PHONY: interactive 60s proxy save runcontainer
 
 interactive:
 	docker build -t openrepl/interactive interactive
@@ -10,6 +10,9 @@ interactive:
 
 save:
 	docker build -t openrepl/save save
+
+runcontainer:
+	docker build -t openrepl/runcontainer runcontainer
 
 proxy:
 	$(MAKE) -C proxy

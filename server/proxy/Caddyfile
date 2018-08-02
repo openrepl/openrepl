@@ -13,4 +13,9 @@
         websocket
         transparent
     }
+    proxy /api/exec/ runcontainer:80 {
+        without /api/exec
+        websocket
+        transparent
+    }
 }
