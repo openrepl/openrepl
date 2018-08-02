@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	dcli, err := client.NewClientWithOpts(client.FromEnv)
+	dcli, err := client.NewEnvClient()
 	if err != nil {
 		panic(err)
 	}
@@ -186,14 +186,16 @@ type StatusUpdate struct {
 	Error  string `json:"err,omitempty"`
 }
 
-func copyWebSocket(dst *websocket.Conn, src *websocket.Conn, cancel context.CancelFunc) {
+func copyWebSocket(dst *websocket.Conn, src *websocket.Conn, cancel context.CancelFunc, n int) {
 	defer cancel()
 	for {
 		// read message
 		t, dat, err := src.ReadMessage()
 		if err != nil {
+			log.Println("Stopping transfer", err.Error(), n)
 			return
 		}
+		log.Println(t, dat)
 
 		switch t {
 		case websocket.CloseMessage:
@@ -211,6 +213,7 @@ func copyWebSocket(dst *websocket.Conn, src *websocket.Conn, cancel context.Canc
 
 // HandleTerminal serves an interactive terminal websocket.
 func (cs *ContainerServer) HandleTerminal(w http.ResponseWriter, r *http.Request) {
+	log.Println("term")
 	// get language
 	lang, ok := cs.Containers[r.URL.Query().Get("lang")]
 	if !ok {
@@ -219,13 +222,16 @@ func (cs *ContainerServer) HandleTerminal(w http.ResponseWriter, r *http.Request
 	}
 
 	// upgrade websocket
+	log.Println("upgrade")
 	conn, err := cs.Upgrader.Upgrade(w, r, nil)
 	if err != nil {
+		log.Println(err)
 		return
 	}
 	defer conn.Close()
 
 	// send status "starting"
+	log.Println("starting")
 	err = conn.WriteJSON(StatusUpdate{Status: "starting"})
 	if err != nil {
 		return
@@ -235,6 +241,7 @@ func (cs *ContainerServer) HandleTerminal(w http.ResponseWriter, r *http.Request
 	startctx, startcancel := context.WithTimeout(context.Background(), time.Minute)
 	defer startcancel()
 	c, err := lang.TermContainer.Deploy(startctx, cs.DockerClient, nil)
+	log.Println("deploy", c, err)
 	if err != nil {
 		conn.WriteJSON(StatusUpdate{Status: "error", Error: err.Error()})
 		err = conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
@@ -266,6 +273,7 @@ func (cs *ContainerServer) HandleTerminal(w http.ResponseWriter, r *http.Request
 	}()
 
 	// update status to running
+	log.Println("running")
 	err = conn.WriteJSON(StatusUpdate{Status: "running"})
 	if err != nil {
 		return
@@ -273,9 +281,11 @@ func (cs *ContainerServer) HandleTerminal(w http.ResponseWriter, r *http.Request
 
 	// bridge connections
 	runctx, cancel := context.WithCancel(context.Background())
-	go copyWebSocket(conn, c.IO, cancel)
-	go copyWebSocket(c.IO, conn, cancel)
+	go copyWebSocket(conn, c.IO, cancel, 1)
+	go copyWebSocket(c.IO, conn, cancel, 2)
+	log.Println("Copying")
 	<-runctx.Done()
+	log.Println("Done")
 }
 
 func packCodeTarball(dat []byte) io.ReadCloser {
@@ -412,7 +422,9 @@ func (cs *ContainerServer) HandleRun(w http.ResponseWriter, r *http.Request) {
 
 	// bridge connections
 	runctx, cancel := context.WithCancel(context.Background())
-	go copyWebSocket(conn, c.IO, cancel)
-	go copyWebSocket(c.IO, conn, cancel)
+	go copyWebSocket(conn, c.IO, cancel, 1)
+	go copyWebSocket(c.IO, conn, cancel, 2)
+	log.Println("Copying")
 	<-runctx.Done()
+	log.Println("Done")
 }

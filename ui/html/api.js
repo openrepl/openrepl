@@ -5,7 +5,6 @@ var openrepl = {};
 openrepl.promiseWS = function(url) {
     return new Promise(function(s, f) {
         var ws = new WebSocket(url);
-        ws.binaryType = "arrayBuffer";
         var opened = false;
         ws.onopen = function() {
             s(ws);
@@ -60,7 +59,7 @@ openrepl.run = function(code, lang) {
                     // error - fail
                     finished = true;
                     ws.close();
-                    f(su.error);
+                    f(su.err);
                     break;
                 }
             };
@@ -108,7 +107,7 @@ openrepl.term = function(lang) {
                     // error - fail
                     finished = true;
                     ws.close();
-                    f(su.error);
+                    f(su.err);
                     break;
                 }
             };
@@ -120,20 +119,4 @@ openrepl.term = function(lang) {
             };
         }, f);
     });
-};
-
-Terminal.applyAddon(fit);
-Terminal.applyAddon(attach);
-
-// openrepl.createTerminal creates an xterm with the given WebSocket and container.
-// NOTE: requires xterm.js
-openrepl.createTerminal = function(ws, container) {
-    // TODO: set color theme https://xtermjs.org/docs/api/terminal/interfaces/iterminaloptions/#optional-theme
-    var term = new Terminal({
-        cursorBlink: true
-    });
-    term.attach(ws);
-    term.open(container);
-    term.fit();
-    return term;
 };

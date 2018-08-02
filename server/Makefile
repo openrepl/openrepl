@@ -12,7 +12,7 @@ save:
 	docker build -t openrepl/save save
 
 runcontainer:
-	docker build -t openrepl/runcontainer runcontainer
+	$(MAKE) -C runcontainer
 
 proxy:
 	$(MAKE) -C proxy

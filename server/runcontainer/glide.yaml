@@ -1,0 +1,10 @@
+package: .
+import:
+- package: github.com/docker/docker
+  version: ^17.5.0-ce-rc3
+  subpackages:
+  - api/types
+  - api/types/container
+  - client
+- package: github.com/jadr2ddude/websocket
+  version: f1bb277a8f26cb49bac1a9b887c65843891b0141
