@@ -6,8 +6,11 @@ services:
     - "8007:80"
     links:
     - "runcontainer"
+    - "store"
   runcontainer:
     image: "openrepl/runcontainer"
     volumes:
     - "/var/run/docker.sock:/var/run/docker.sock"
     - "/tmp:/tmp"
+  store:
+    image: "openrepl/store"
