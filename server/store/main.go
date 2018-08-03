@@ -172,6 +172,7 @@ func main() {
 		}
 
 		// write back key
+		w.Header().Add("Content-Type", "text/plain")
 		w.Write([]byte(key))
 	})
 
@@ -188,6 +189,7 @@ func main() {
 			http.Error(w, fmt.Sprintf("failed to load: %s", err.Error()), http.StatusInternalServerError)
 			return
 		}
+		w.Header().Add("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(c)
 	})
 
