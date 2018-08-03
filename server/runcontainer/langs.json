@@ -88,5 +88,15 @@
             "image": "openrepl/php",
             "cmd": ["/code"]
         }
+    },
+    "golang": {
+        "term": {
+            "image": "openrepl/golang",
+            "cmd": []
+        },
+        "run": {
+            "image": "openrepl/golang",
+            "cmd": ["/code"]
+        }
     }
 }

@@ -91,7 +91,6 @@ function setLanguage(lang) {
     loadTerm1(lang);
     language = lang;
 }
-setLanguage("lua");
 var t2ws;
 var t2c = true;
 runbtn.onclick = function() {
@@ -148,11 +147,13 @@ attachLang("bash");
 attachLang("javascript");
 attachLang("typescript");
 attachLang("php");
+attachLang("golang");
 
 (function() {
     var url = new URL(window.location.href);
     var key = url.searchParams.get('key');
     if(key == null) {
+        setLanguage("lua");
         return;
     }
     openrepl.load(key).then(function(code) {
@@ -161,5 +162,6 @@ attachLang("php");
     }, function(e) {
         alert('Failed to load.');
         console.log(e);
+        setLanguage("lua");
     });
 })();
