@@ -27,7 +27,6 @@ function loadTerm1(lang) {
 }
 var runbtn = document.getElementById("runbtn");
 var savebtn = document.getElementById("savebtn");
-var loadbtn = document.getElementById("loadbtn");
 ace.require("ace/ext/language_tools");
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
@@ -47,17 +46,6 @@ editor.commands.addCommand({
     },
     exec: function(env, args, request) {
         savebtn.click();
-    }
-});
-editor.commands.addCommand({
-    name: 'open',
-    bindKey: {
-        win: 'Ctrl-O',
-        mac: 'Command-O',
-        sender: 'editor'
-    },
-    exec: function(env, args, request) {
-        loadbtn.click();
     }
 });
 editor.commands.addCommand({
@@ -136,42 +124,15 @@ runbtn.onclick = function() {
 };
 savebtn.onclick = function() {
     savebtn.classList.add("disabled");
-    var xhr = new XMLHttpRequest();
-    xhr.open('PUT', "/api/60s/add", true);
-    xhr.send(editor.getValue());
-    xhr.onreadystatechange = function(){
-        if (xhr.readyState == 4) {
-            if (xhr.status == 200) {
-                var x2 = new XMLHttpRequest();
-                x2.open('POST', "/api/save/save", true);
-                x2.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                x2.onreadystatechange = function() {
-                    if(x2.readyState == 4) {
-                        if(x2.status == 200) {
-                            document.getElementById("savelnk").innerHTML = "Save ID: " + x2.responseText;
-                            savebtn.classList.remove("disabled");
-                        }
-                    }
-                }
-                x2.send('srcid='+xhr.responseText);
-            }
-        }
-    };
-};
-loadbtn.onclick = function() {
-    var id = prompt("Enter save ID");
-    if (id != null) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', "/api/save/get?id="+id, true);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4) {
-                if (xhr.status == 200) {
-                    editor.setValue(xhr.responseText, -1);
-                }
-            }
-        }
-        xhr.send();
-    }
+    openrepl.store(editor.getValue(), language).then(function(key) {
+        var u = new URL(window.location.href);
+        u.searchParams.set('key', key);
+        window.location.replace(u.toString());
+    }, function(e) {
+        alert('Failed to save.');
+        console.log(e);
+        savebtn.classList.remove("disabled");
+    })
 };
 function attachLang(l) {
     document.getElementById("lang-"+l).onclick = function() {
@@ -187,3 +148,18 @@ attachLang("bash");
 attachLang("javascript");
 attachLang("typescript");
 attachLang("php");
+
+(function() {
+    var url = new URL(window.location.href);
+    var key = url.searchParams.get('key');
+    if(key == null) {
+        return;
+    }
+    openrepl.load(key).then(function(code) {
+        setLanguage(code.language);
+        editor.setValue(code.code, -1);
+    }, function(e) {
+        alert('Failed to load.');
+        console.log(e);
+    });
+})();

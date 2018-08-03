@@ -7,7 +7,7 @@
         websocket
         transparent
     }
-    proxy /api/store store:80 {
+    proxy /api/store/ store:80 {
         without /api/store
         transparent
     }

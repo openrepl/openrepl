@@ -120,3 +120,51 @@ openrepl.term = function(lang) {
         }, f);
     });
 };
+
+openrepl.xhrpromise = function(xhr, body) {
+    return new Promise(function(resolve, reject) {
+        xhr.onload = function() {
+            if(xhr.status == 200) {
+                resolve(xhr.response);
+            } else {
+                reject(xhr.statusText);
+            }
+        };
+        xhr.onerror = function(e) {
+            reject(e);
+        };
+        if(body) {
+            xhr.send(body);
+        } else {
+            xhr.send();
+        }
+    });
+}
+
+openrepl.store = function(code, lang) {
+    return new Promise(function(resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/store/store');
+        xhr.responseType = 'text';
+        openrepl.xhrpromise(xhr, JSON.stringify({"code": code, "language": lang})).then(function(key) {
+            resolve(key);
+        }, function(e) {
+            reject(e);
+        })
+    });
+}
+
+openrepl.load = function(key) {
+    return new Promise(function(resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        var targ = new URL('/api/store/load', window.location.href);
+        targ.searchParams.set('key', key);
+        xhr.open('GET', targ.toString());
+        xhr.responseType = 'json';
+        openrepl.xhrpromise(xhr).then(function(code) {
+            resolve(code);
+        }, function(e) {
+            reject(e);
+        })
+    });
+}
