@@ -2,17 +2,6 @@
     root /web
     index repl.html
     header /api/ Access-Control-Allow-Origin *
-    proxy /api/60s/ 60s:80 {
-        without /api/60s
-    }
-    proxy /api/save/ save:80 {
-        without /api/save
-    }
-    proxy /api/ interactive:52 {
-        without /api
-        websocket
-        transparent
-    }
     proxy /api/exec/ runcontainer:80 {
         without /api/exec
         websocket

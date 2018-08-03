@@ -1,17 +1,10 @@
-/*import { Terminal } from ;
-import * as fit from 'https://cdn.jsdelivr.net/npm/xterm@3.5.1/lib/addons/fit/fit.js';
-import * as attach from 'https://cdn.jsdelivr.net/npm/xterm@3.5.1/lib/addons/attach/attach.js';*/
-
 Terminal.applyAddon(fit);
 Terminal.applyAddon(attach);
 var term1 = new Terminal({
     cursorBlink: true
 });
-/*var term2 = new Terminal({
-    cursorBlink: true
-});*/
+var term2;
 term1.open(document.getElementById("terminal"));
-//term2.open(document.getElementById("term2"));
 var t1ws;
 var t1c = true;
 function updateT1WS(ws) {
@@ -92,18 +85,18 @@ window.onresize=function() {
         document.getElementById("editor").style.height = eh;
         t2.style.top = et + eh;
         t2.style.height = window.innerHeight - (et + eh);
+        term2.fit();
     }
     term1.fit();
-    //term2.fit();
 };
 window.onresize();
 var language = "lua";
 function setLanguage(lang) {
     if(lang == "bash") {
         editor.getSession().setMode("ace/mode/sh");
-    }else if(lang == "cpp") {
+    } else if(lang == "cpp") {
         editor.getSession().setMode("ace/mode/c_cpp");
-    }else {
+    } else {
         editor.getSession().setMode("ace/mode/"+lang);
     }
     editor.setValue(demos[lang], -1);
@@ -111,21 +104,32 @@ function setLanguage(lang) {
     language = lang;
 }
 setLanguage("lua");
+var t2ws;
+var t2c = true;
 runbtn.onclick = function() {
     runbtn.classList.add("disabled");
-    var xhr = new XMLHttpRequest();
-    xhr.open('PUT', "/api/60s/add", true);
-    xhr.send(editor.getValue());
-    xhr.onreadystatechange = function(e){
-        if (xhr.readyState == 4) {
-            if (xhr.status == 200) {
-                term2.src = "/api/"+language+"?arg="+language+"&arg="+xhr.responseText;
-                termdiv.style.visibility = "visible";
-                window.onresize();
-                runbtn.classList.remove("disabled");
-            }
+    openrepl.run(editor.getValue(), language).then(function(ws) {
+        if(!t2c) {
+            t2ws.onclose = function() {};
+            t2ws.close();
+            term2.detach(t2ws);
+            term2.reset();
         }
-    };
+        termdiv.style.visibility = "visible";
+        t2ws = ws;
+        if(!term2) {
+            term2 = new Terminal({
+                cursorBlink: true
+            });
+            term2.open(document.getElementById("term2"));
+        }
+        term2.attach(ws);
+        window.onresize();
+        runbtn.classList.remove("disabled");
+    }, function(e) {
+        console.log(e);
+        runbtn.classList.remove("disabled");
+    });
 };
 savebtn.onclick = function() {
     savebtn.classList.add("disabled");

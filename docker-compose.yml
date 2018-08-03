@@ -5,26 +5,9 @@ services:
     ports:
     - "8007:80"
     links:
-    - "interactive"
-    - "60s"
     - "runcontainer"
-  interactive:
-    image: "openrepl/interactive"
-    links:
-    - "60s"
-    volumes:
-    - "/var/run/docker.sock:/var/run/docker.sock"
-    - "/tmp:/tmp"
   runcontainer:
     image: "openrepl/runcontainer"
     volumes:
     - "/var/run/docker.sock:/var/run/docker.sock"
     - "/tmp:/tmp"
-  60s:
-    image: "openrepl/60s"
-  save:
-    image: "openrepl/save"
-    links:
-    - "60s"
-    volumes:
-    - "/srv/dat:/dat"
