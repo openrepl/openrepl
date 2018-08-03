@@ -108,6 +108,9 @@ var t2ws;
 var t2c = true;
 runbtn.onclick = function() {
     runbtn.classList.add("disabled");
+    if(term2) {
+        term2.reset();
+    }
     openrepl.run(editor.getValue(), language).then(function(ws) {
         if(!t2c) {
             t2ws.onclose = function() {};
@@ -122,9 +125,9 @@ runbtn.onclick = function() {
                 cursorBlink: true
             });
             term2.open(document.getElementById("term2"));
+            window.onresize();
         }
         term2.attach(ws);
-        window.onresize();
         runbtn.classList.remove("disabled");
     }, function(e) {
         console.log(e);
