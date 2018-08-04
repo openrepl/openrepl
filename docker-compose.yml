@@ -14,3 +14,6 @@ services:
     - "/tmp:/tmp"
   store:
     image: "openrepl/store"
+    command: ["-driver", "dir", "-dir", "/storage"]
+    volumes:
+    - "/storage"
