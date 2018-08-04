@@ -1,3 +1,4 @@
+M.AutoInit();
 Terminal.applyAddon(fit);
 Terminal.applyAddon(attach);
 function toastErr(err) {
