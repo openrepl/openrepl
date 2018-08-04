@@ -1,5 +1,11 @@
 Terminal.applyAddon(fit);
 Terminal.applyAddon(attach);
+function toastErr(err) {
+    M.toast({
+        html: err,
+        displayLength: 10000
+    });
+};
 var term1 = new Terminal({
     cursorBlink: true
 });
@@ -11,6 +17,7 @@ function updateT1WS(ws) {
     t1ws = ws;
     t1c = false;
     ws.onclose = function() {
+        toastErr('Interactive terminal disconnected.');
         term1.detach(ws);
         t1c = true;
     };
@@ -23,7 +30,12 @@ function loadTerm1(lang) {
         t1ws.close();
     }
     term1.reset();
-    openrepl.term(lang).then((ws) => updateT1WS(ws), (e) => console.log(e));
+    openrepl.term(lang).then((ws) => {
+        updateT1WS(ws)
+    }, (e) => {
+        toastErr('Failed to load repl terminal.');
+        console.log(e);
+    });
 }
 var runbtn = document.getElementById("runbtn");
 var savebtn = document.getElementById("savebtn");
@@ -117,6 +129,7 @@ runbtn.onclick = function() {
         term2.attach(ws);
         runbtn.classList.remove("disabled");
     }, function(e) {
+        toastErr('Failed to load run session.');
         console.log(e);
         runbtn.classList.remove("disabled");
     });
@@ -128,7 +141,7 @@ savebtn.onclick = function() {
         u.searchParams.set('key', key);
         window.location.replace(u.toString());
     }, function(e) {
-        alert('Failed to save.');
+        toastErr('Failed to save.');
         console.log(e);
         savebtn.classList.remove("disabled");
     })
@@ -160,7 +173,7 @@ attachLang("golang");
         setLanguage(code.language);
         editor.setValue(code.code, -1);
     }, function(e) {
-        alert('Failed to load.');
+        toastErr('Failed to load saved code.');
         console.log(e);
         setLanguage("lua");
     });
