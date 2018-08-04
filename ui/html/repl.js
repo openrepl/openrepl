@@ -173,6 +173,7 @@ attachLang("javascript");
 attachLang("typescript");
 attachLang("php");
 attachLang("golang");
+attachLang("haskell");
 
 (function() {
     var url = new URL(window.location.href);

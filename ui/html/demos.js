@@ -8,5 +8,6 @@ var demos = {
     javascript: 'console.log("Hello world");',
     php: '<?php print "Hello World!"; ?>',
     typescript: 'console.log("Hello, world!");',
-    golang: 'package main\n\nimport "fmt"\n\nfunc main() {\n\tfmt.Println("Hello world!")\n}'
+    golang: 'package main\n\nimport "fmt"\n\nfunc main() {\n\tfmt.Println("Hello world!")\n}',
+    haskell: 'main = putStrLn "Hello, World!"'
 };

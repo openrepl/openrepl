@@ -98,5 +98,15 @@
             "image": "openrepl/golang",
             "cmd": ["/code"]
         }
+    },
+    "haskell": {
+        "term": {
+            "image": "openrepl/haskell",
+            "cmd": []
+        },
+        "run": {
+            "image": "openrepl/haskell",
+            "cmd": ["/code"]
+        }
     }
 }
