@@ -40,6 +40,7 @@ function loadTerm1(lang) {
 }
 var runbtn = document.getElementById("runbtn");
 var savebtn = document.getElementById("savebtn");
+var stopbtn = document.getElementById("stopbtn");
 ace.require("ace/ext/language_tools");
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
@@ -106,18 +107,29 @@ function setLanguage(lang) {
 }
 var t2ws;
 var t2c = true;
+var closecancel;
+stopbtn.onclick = function() {
+    closecancel = true;
+    t2ws.close();
+};
 runbtn.onclick = function() {
+    closecancel = false;
     runbtn.classList.add("disabled");
     if(term2) {
         term2.reset();
     }
     openrepl.run(editor.getValue(), language).then(function(ws) {
-        if(!t2c) {
-            t2ws.onclose = function() {};
-            t2ws.close();
-            term2.detach(t2ws);
-            term2.reset();
-        }
+        ws.onclose = function() {
+            term2.detach(ws);
+            runbtn.classList.remove("disabled");
+            stopbtn.classList.add("disabled");
+            if(closecancel) {
+                toastErr('Sucessfully stopped run.');
+            } else {
+                M.toast({html: 'Run finished.'});
+            }
+        };
+        stopbtn.classList.remove("disabled");
         termdiv.style.visibility = "visible";
         t2ws = ws;
         if(!term2) {
@@ -128,7 +140,6 @@ runbtn.onclick = function() {
             window.onresize();
         }
         term2.attach(ws);
-        runbtn.classList.remove("disabled");
     }, function(e) {
         toastErr('Failed to load run session.');
         console.log(e);
