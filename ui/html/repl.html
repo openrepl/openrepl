@@ -1,17 +1,18 @@
 <html>
     <head>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ace.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ext-language_tools.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@3.5.1/dist/xterm.css">
         <script src="https://cdn.jsdelivr.net/npm/xterm@3.5.1/dist/xterm.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/xterm@3.5.1/dist/addons/attach/attach.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/xterm@3.5.1/dist/addons/fit/fit.js"></script>
-        <script src="api.js"></script>
         <script src="demos.js"></script>
+        <script src="api.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@3.5.1/dist/xterm.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="/repl.css">
     </head>
     <header>
         <nav>
@@ -26,27 +27,6 @@
     <body>
         <div id="container" class="container">
             <div class="col" width=65% style="float:left;">
-                <style>
-                    .editor {
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        bottom: 0;
-                        right: 0;
-                        width: 65%;
-                    }
-                    .terminal {
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        bottom: 0;
-                        right: 0;
-                        /*width: 35%;*/
-                        float: right;
-                        border: none;
-                        overflow: hidden;
-                    }
-                </style>
                 <div id="buttons" class="blue accent-4" style="position:absolute;left:0;right:0;">
                     <button class="btn waves-effect waves-light" id="runbtn">
                         Run<i class="material-icons right">directions_run</i>
@@ -81,7 +61,6 @@
             <div class="col">
                 <div id="terminal" class="terminal"></div>
             </div>
-            <script>var exports = {};</script>
             <script src="/repl.js"></script>
         </div>
     </body>
