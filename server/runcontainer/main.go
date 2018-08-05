@@ -230,23 +230,9 @@ func (cs *ContainerServer) HandleTerminal(w http.ResponseWriter, r *http.Request
 		return
 	}
 	defer conn.Close()
-
-	// send status "starting"
-	log.Println("starting")
-	err = conn.WriteJSON(StatusUpdate{Status: "starting"})
-	if err != nil {
-		return
-	}
-
-	// deploy container with 1 min timeout
-	startctx, startcancel := context.WithTimeout(context.Background(), time.Minute)
-	defer startcancel()
-	c, err := lang.TermContainer.Deploy(startctx, cs.DockerClient, nil)
-	log.Println("deploy", c, err)
-	if err != nil {
-		conn.WriteJSON(StatusUpdate{Status: "error", Error: err.Error()})
-		err = conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
-		if err == nil {
+	defer func() {
+		cerr := conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+		if cerr == nil {
 			donech := make(chan struct{})
 			go func() {
 				defer close(donech)
@@ -263,6 +249,23 @@ func (cs *ContainerServer) HandleTerminal(w http.ResponseWriter, r *http.Request
 			case <-timer.C:
 			}
 		}
+	}()
+
+	// send status "starting"
+	log.Println("starting")
+	err = conn.WriteJSON(StatusUpdate{Status: "starting"})
+	if err != nil {
+		return
+	}
+
+	// deploy container with 1 min timeout
+	startctx, startcancel := context.WithTimeout(context.Background(), time.Minute)
+	defer startcancel()
+	c, err := lang.TermContainer.Deploy(startctx, cs.DockerClient, nil)
+	log.Println("deploy", c, err)
+	if err != nil {
+		conn.WriteJSON(StatusUpdate{Status: "error", Error: err.Error()})
+		return
 	}
 	defer func() {
 		stopctx, stopcancel := context.WithTimeout(context.Background(), time.Minute)
