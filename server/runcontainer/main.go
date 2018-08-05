@@ -375,6 +375,26 @@ func (cs *ContainerServer) HandleRun(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer conn.Close()
+	defer func() {
+		cerr := conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+		if cerr == nil {
+			donech := make(chan struct{})
+			go func() {
+				defer close(donech)
+				// drain client messages and wait for disconnect
+				var e error
+				for e == nil {
+					_, _, e = conn.ReadMessage()
+				}
+			}()
+			timer := time.NewTimer(10 * time.Second)
+			defer timer.Stop()
+			select {
+			case <-donech:
+			case <-timer.C:
+			}
+		}
+	}()
 
 	// send status "creating"
 	err = conn.WriteJSON(StatusUpdate{Status: "creating"})
@@ -427,24 +447,7 @@ func (cs *ContainerServer) HandleRun(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		conn.WriteJSON(StatusUpdate{Status: "error", Error: err.Error()})
-		err = conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
-		if err == nil {
-			donech := make(chan struct{})
-			go func() {
-				defer close(donech)
-				// drain client messages and wait for disconnect
-				var e error
-				for e == nil {
-					_, _, e = conn.ReadMessage()
-				}
-			}()
-			timer := time.NewTimer(10 * time.Second)
-			defer timer.Stop()
-			select {
-			case <-donech:
-			case <-timer.C:
-			}
-		}
+		return
 	}
 	defer func() {
 		stopctx, stopcancel := context.WithTimeout(context.Background(), time.Minute)
