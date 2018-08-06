@@ -1,4 +1,4 @@
-# [openrepl](https://repl.techmeowt.com)
+# [openrepl](https://repl.techmeowt.com)[![Gitter](https://badges.gitter.im/openrepl/openrepl.svg)](https://gitter.im/openrepl/openrepl?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 OpenRepl REPL is an online REPL where you can run code in a variety of programming languages on the web.
 
 ## How to use
