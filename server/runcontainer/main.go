@@ -108,7 +108,12 @@ func (cc ContainerConfig) Deploy(ctx context.Context, cli *client.Client, presta
 		Tty:             true,
 		OpenStdin:       true,
 		NetworkDisabled: true,
-	}, nil, nil, "")
+	}, &container.HostConfig{
+		Resources: container.Resources{
+			NanoCPUs: int64(time.Second/time.Nanosecond) / 2, // 1/2 CPU cap
+			Memory:   1 << 27,                                // cap at 128MB
+		},
+	}, nil, "")
 	if err != nil {
 		return nil, err
 	}
