@@ -109,6 +109,7 @@ var t2ws;
 var t2c = true;
 var closecancel;
 stopbtn.onclick = function() {
+    stopbtn.classList.add('disabled');
     closecancel = true;
     t2ws.close();
 };
@@ -122,14 +123,17 @@ runbtn.onclick = function() {
         ws.onclose = function() {
             term2.detach(ws);
             runbtn.classList.remove("disabled");
-            stopbtn.classList.add("disabled");
+            runbtn.classList.remove('invisible');
+            stopbtn.classList.add('invisible');
+            stopbtn.classList.remove("disabled");
             if(closecancel) {
                 toastErr('Sucessfully stopped run.');
             } else {
                 M.toast({html: 'Run finished.'});
             }
         };
-        stopbtn.classList.remove("disabled");
+        runbtn.classList.add('invisible');
+        stopbtn.classList.remove('invisible');
         termdiv.style.visibility = "visible";
         t2ws = ws;
         if(!term2) {

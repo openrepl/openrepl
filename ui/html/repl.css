@@ -16,3 +16,6 @@
     border: none;
     overflow: hidden;
 }
+.invisible {
+    display: none;
+}
