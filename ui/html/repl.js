@@ -114,6 +114,7 @@ stopbtn.onclick = function() {
     t2ws.close();
 };
 runbtn.onclick = function() {
+    if(runbtn.classList.contains('disabled')) return;
     closecancel = false;
     runbtn.classList.add("disabled");
     if(term2) {
