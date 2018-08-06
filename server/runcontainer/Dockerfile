@@ -1,6 +1,6 @@
 FROM golang:1.9-alpine as builder
 RUN apk add --no-cache git
-COPY main.go /go/src/github.com/openrepl/server/runcontainer/main.go
+COPY *.go /go/src/github.com/openrepl/server/runcontainer/
 COPY vendor /go/src/github.com/openrepl/server/runcontainer/vendor
 RUN CGO_ENABLED=0 go build -o /runcontainer.o github.com/openrepl/server/runcontainer
 

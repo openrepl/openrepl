@@ -6,5 +6,3 @@ import:
   - api/types
   - api/types/container
   - client
-- package: github.com/jadr2ddude/websocket
-  version: f1bb277a8f26cb49bac1a9b887c65843891b0141
