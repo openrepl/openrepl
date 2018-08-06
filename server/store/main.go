@@ -178,18 +178,33 @@ func main() {
 
 	// load Code
 	http.HandleFunc("/load", func(w http.ResponseWriter, r *http.Request) {
+		// check method
 		if r.Method != http.MethodGet {
 			http.Error(w, "method not supported", http.StatusMethodNotAllowed)
 			return
 		}
 
+		// get key
 		key := r.URL.Query().Get("key")
+
+		// handle ETag caching
+		if etag := r.Header.Get("If-None-Match"); etag != "" && etag == key {
+			w.WriteHeader(http.StatusNotModified)
+			return
+		}
+
+		// run KV lookup
 		c, err := cs.Get(key)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("failed to load: %s", err.Error()), http.StatusInternalServerError)
 			return
 		}
+
+		// set headers
+		w.Header().Add("ETag", key)
 		w.Header().Add("Content-Type", "application/json")
+
+		// send response
 		json.NewEncoder(w).Encode(c)
 	})
 
