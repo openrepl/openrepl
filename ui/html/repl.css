@@ -19,3 +19,8 @@
 .invisible {
     display: none;
 }
+.term-preloader {
+    width: 50%;
+    margin: auto;
+    z-index: 4;
+}

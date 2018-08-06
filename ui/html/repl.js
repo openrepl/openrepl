@@ -12,6 +12,7 @@ var term1 = new Terminal({
 });
 var term2;
 term1.open(document.getElementById("terminal"));
+var t1pre = document.getElementById('tpre');
 var t1ws;
 var t1c = true;
 function updateT1WS(ws) {
@@ -25,6 +26,7 @@ function updateT1WS(ws) {
     term1.attach(ws, true, true);
 }
 function loadTerm1(lang) {
+    t1pre.classList.remove('invisible');
     if(!t1c) {
         t1ws.onclose = function() {};
         term1.detach(t1ws);
@@ -32,10 +34,12 @@ function loadTerm1(lang) {
     }
     term1.reset();
     openrepl.term(lang).then((ws) => {
-        updateT1WS(ws)
+        updateT1WS(ws);
+        t1pre.classList.add('invisible');
     }, (e) => {
         toastErr('Failed to load repl terminal.');
         console.log(e);
+        t1pre.classList.add('invisible');
     });
 }
 var runbtn = document.getElementById("runbtn");
