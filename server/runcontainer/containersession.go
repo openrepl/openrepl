@@ -3,6 +3,7 @@ package main
 import (
 	"archive/tar"
 	"context"
+	"errors"
 	"io"
 	"io/ioutil"
 	"log"
@@ -24,6 +25,9 @@ type ContainerSessionConfig struct {
 
 	// DockerClient is the docker client to use to create containers.
 	DockerClient *client.Client
+
+	// PingRate is the amount of time to wait between sending pings.
+	PingRate time.Duration
 
 	// ContainerStopTimeout is the timeout for stopping a container.
 	ContainerStopTimeout time.Duration
@@ -138,6 +142,42 @@ func (cs *ContainerSession) runInput(errch chan<- error) {
 	}
 }
 
+func (cs *ContainerSession) runPing(errch chan<- error) {
+	// record pong messages
+	pongch := make(chan struct{}, 1)
+	cs.Client.SetPongHandler(func(appData string) error {
+		select {
+		case pongch <- struct{}{}:
+		}
+		return nil
+	})
+
+	// start playing ping-pong
+	go func() {
+		var err error
+		defer func() { errch <- err }()
+		tick := time.NewTicker(cs.Config.PingRate)
+		defer tick.Stop()
+		for range tick.C {
+			// send ping
+			err = cs.Client.WriteControl(websocket.PingMessage, []byte{1}, time.Now().Add(10*time.Second))
+			if err != nil {
+				return
+			}
+
+			// wait for pong
+			select {
+			case <-pongch:
+				// we are good - client sent pong on time
+			case <-tick.C:
+				// timeout while waiting for pong - stalled client
+				err = errors.New("stalled client")
+				return
+			}
+		}
+	}()
+}
+
 // RunIO runs input and output for the session, closing afterwards.
 func (cs *ContainerSession) RunIO(ctx context.Context) error {
 	errch := make(chan error, 2)
@@ -148,13 +188,17 @@ func (cs *ContainerSession) RunIO(ctx context.Context) error {
 	// start input
 	go cs.runInput(errch)
 
+	// start ping-pong
+	cs.runPing(errch)
+
 	// wait for error
 	err := <-errch
 
 	// close session
 	cs.Close()
 
-	// ignore second error
+	// ignore second/third error
+	<-errch
 	<-errch
 
 	return err

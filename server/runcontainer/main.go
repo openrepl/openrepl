@@ -22,6 +22,7 @@ func main() {
 			ContainerStopTimeout: time.Minute,
 			StartTimeout:         time.Minute,
 			SessionTimeout:       time.Hour,
+			PingRate:             30 * time.Second,
 		},
 	}
 	f, err := os.Open("langs.json")
