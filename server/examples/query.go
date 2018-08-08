@@ -45,6 +45,13 @@ func QueryTag(tag string) Query {
 			if v.Raw == tag {
 				return true
 			}
+			if v.Parts != nil {
+				for _, p := range v.Parts {
+					if p == tag {
+						return true
+					}
+				}
+			}
 		}
 		return false
 	})
@@ -87,9 +94,6 @@ func (qs *queryStack) push(q Query) {
 
 // pop pops a query off the stack or returns nil if the stack is empty.
 func (qs *queryStack) pop() Query {
-	if len(*qs) == 0 {
-		return nil
-	}
 	v := (*qs)[len(*qs)-1]
 	*qs = (*qs)[:len(*qs)-1]
 	return v
@@ -152,4 +156,20 @@ func ParseQuery(str string) Query {
 
 	// pass out final query
 	return qs.pop()
+}
+
+// Search uses a query to search for a subset of the ExampleSet.
+func (es ExampleSet) Search(q Query) ExampleSet {
+	s := ExampleSet{}
+	for _, v := range es {
+		if q(v) {
+			s = append(s, v)
+		}
+	}
+	return s
+}
+
+// SearchQuery parses and executes the query string.
+func (es ExampleSet) SearchQuery(query string) ExampleSet {
+	return es.Search(ParseQuery(query))
 }
