@@ -12,4 +12,4 @@ store:
 	docker build -t openrepl/store store
 
 examples:
-	docker build -t openrepl/examples examples
+	$(MAKE) -C examples

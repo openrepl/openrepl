@@ -1,0 +1,8 @@
+package: .
+import:
+- package: github.com/alecthomas/chroma
+  version: ^0.5.0
+  subpackages:
+  - formatters/html
+  - lexers
+  - styles

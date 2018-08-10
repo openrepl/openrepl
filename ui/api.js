@@ -139,7 +139,7 @@ openrepl.xhrpromise = function(xhr, body) {
             xhr.send();
         }
     });
-}
+};
 
 openrepl.store = function(code, lang) {
     return new Promise(function(resolve, reject) {
@@ -150,9 +150,9 @@ openrepl.store = function(code, lang) {
             resolve(key);
         }, function(e) {
             reject(e);
-        })
+        });
     });
-}
+};
 
 openrepl.load = function(key) {
     return new Promise(function(resolve, reject) {
@@ -165,6 +165,33 @@ openrepl.load = function(key) {
             resolve(code);
         }, function(e) {
             reject(e);
-        })
+        });
     });
-}
+};
+
+openrepl.queryExamples = function(query) {
+    return new Promise(function(resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/examples/query');
+        xhr.responseType = 'json';
+        openrepl.xhrpromise(xhr, query).then(function(resp) {
+            resolve(resp);
+        }, function(e) {
+            reject(e);
+        });
+    });
+};
+
+openrepl.highlight = function(code, lang) {
+    return new Promise(function(resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/examples/highlight');
+        openrepl.xhrpromise(xhr, JSON.stringify({"code": code, "language": lang})).then(function(src) {
+            var elem = document.createElement('div');
+            elem.innerHTML = src;
+            resolve(elem.childNodes[0]);
+        }, function(e) {
+            reject(e);
+        });
+    });
+};

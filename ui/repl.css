@@ -24,3 +24,15 @@
     margin: auto;
     z-index: 4;
 }
+.abscenter {
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+.h-chroma {
+    word-break: break-all;
+    white-space: pre-line;
+}
