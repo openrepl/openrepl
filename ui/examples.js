@@ -37,6 +37,13 @@ function exampleCard(ex) {
     var cardAction = document.createElement('div');
     cardAction.classList.add('card-action');
 
+    // add language as a chip
+    var langchip = document.createElement('div');
+    langchip.classList.add('chip');
+    langchip.appendChild(document.createTextNode(ex.lang));
+    langchip.onclick = () => { search.value = 'lang:' + ex.lang; search.onchange(); };
+    cardAction.appendChild(langchip);
+
     // add tags to card action
     if(ex.tags) {
         for(var i = 0; i < ex.tags.length; i++) {
