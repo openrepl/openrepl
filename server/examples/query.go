@@ -1,6 +1,10 @@
 package main
 
 import (
+	"encoding/json"
+	"io"
+	"io/ioutil"
+	"net/http"
 	"strings"
 )
 
@@ -172,4 +176,19 @@ func (es ExampleSet) Search(q Query) ExampleSet {
 // SearchQuery parses and executes the query string.
 func (es ExampleSet) SearchQuery(query string) ExampleSet {
 	return es.Search(ParseQuery(query))
+}
+
+func (es ExampleSet) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		return
+	}
+
+	dat, err := ioutil.ReadAll(io.LimitReader(r.Body, 100*1024))
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(es.SearchQuery(string(dat)))
 }

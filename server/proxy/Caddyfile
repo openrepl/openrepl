@@ -11,4 +11,8 @@
         without /api/store
         transparent
     }
+    proxy /api/examples/ examples:80 {
+        without /api/examples
+        transparent
+    }
 }
