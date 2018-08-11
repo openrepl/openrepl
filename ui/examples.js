@@ -11,14 +11,14 @@ function toastErr(err) {
     });
 };
 
-function exampleCard(ex) {
+function exampleCard(ex, cb) {
     // add code element
     var code = document.createElement('code');
     code.appendChild(document.createTextNode(ex.code));
 
     // outer col
     var col = document.createElement('div');
-    col.classList.add('col', 's12', 'm6', 'l4', 'xl3');
+    col.classList.add('col', 's12', 'm12', 'l6', 'xl4');
 
     // card div
     var card = document.createElement('div');
@@ -76,6 +76,7 @@ function exampleCard(ex) {
     // start async syntax highlight
     openrepl.highlight(ex.code, ex.lang).then((c) => {
         cardContent.replaceChild(c, code);
+        cb();
     }, (e) => {
         toastErr('failed to highlight');
         console.log(e);
@@ -104,8 +105,15 @@ function runQuery(query) {
     return new Promise((resolve, reject) => {
         openrepl.queryExamples(query).then((es) => {
             cardbox.innerHTML = '';
+            var n = es.length;
+            var cb = function() {
+                n--;
+                if(n == 0) {
+                    relayout();
+                }
+            };
             for(var i = 0; i < es.length; i++) {
-                cardbox.appendChild(exampleCard(es[i]));
+                cardbox.appendChild(exampleCard(es[i], cb));
             }
             sp.classList.add('invisible');
             resolve();
@@ -123,4 +131,48 @@ search.onchange = () => {
     });
 };
 
+window.onresize = () => { search.onchange(); };
+
 search.onchange();
+
+function relayout() {
+    // count columns
+    var cards = Array.from(cardbox.childNodes);
+    var x = cards[0].offsetTop;
+    var cols;
+    for(cols = 1; (cols < cards.length) && (cards[cols].offsetTop == x); cols++);
+
+    // extract card divs from card cols
+    for(var i = 0; i < cards.length; i++) {
+        var col = cards[i];
+
+        cards[i] = col.childNodes[0];
+
+        if(i < cols) {
+            // reuse col
+            col.removeChild(cards[i]);
+        } else {
+            // remove col
+            cardbox.removeChild(col);
+        }
+    }
+
+    cols = cardbox.childNodes;
+
+    // add cards to cols
+    for(var i = 0; i < cards.length; i++) {
+        // find shortest column
+        var bestcol = 0;
+        var minH = cols[0].offsetHeight;
+        for(var j = 1; j < cols.length; j++) {
+            var h = cols[j].offsetHeight;
+            if(h < minH) {
+                bestcol = j;
+                minH = h;
+            }
+        }
+
+        // add to col
+        cols[bestcol].appendChild(cards[i]);
+    }
+}
