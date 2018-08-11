@@ -18,7 +18,7 @@
                         <div class="input-field">
                             <input id="search" type="search">
                             <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-                            <i class="material-icons">close</i>
+                            <i onclick="{var s=document.getElementById('search');s.value='';s.onchange();}return false" class="material-icons">close</i>
                         </div>
                     </form>
                     <ul id="nav-mobile" class="right hide-on-med-and-down">
@@ -26,9 +26,6 @@
                     </ul>
                 </div>
             </nav>
-            <div id="sp" class="progress invisible">
-                <div class="indeterminate"></div>
-            </div>
         </header>
         <div class="container">
             <!-- Cards go in the col below -->

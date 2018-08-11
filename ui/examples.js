@@ -1,7 +1,6 @@
 var search = document.getElementById('search');
 var cardbox = document.getElementById('cardbox');
 var preload = document.getElementById('preload');
-var sp = document.getElementById('sp');
 
 
 function toastErr(err) {
@@ -51,7 +50,7 @@ function exampleCard(ex, cb) {
             var chip = document.createElement('div');
             chip.classList.add('chip');
             chip.appendChild(document.createTextNode(tag));
-            chip.onclick = () => { search.value = tag; search.onchange(); };
+            chip.onclick = () => { search.value = 'tag:' + tag; search.onchange(); };
             cardAction.appendChild(chip);
         }
     }
@@ -101,7 +100,8 @@ function runExample(ex) {
 }
 
 function runQuery(query) {
-    sp.classList.remove('invisible');
+    cardbox.innerHTML = '';
+    cardbox.appendChild(preload);
     return new Promise((resolve, reject) => {
         openrepl.queryExamples(query).then((es) => {
             cardbox.innerHTML = '';
@@ -115,10 +115,8 @@ function runQuery(query) {
             for(var i = 0; i < es.length; i++) {
                 cardbox.appendChild(exampleCard(es[i], cb));
             }
-            sp.classList.add('invisible');
             resolve();
         }, (e) => {
-            sp.classList.add('invisible');
             reject(e);
         });
     });
