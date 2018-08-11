@@ -14,8 +14,7 @@
         <header>
             <nav>
                 <div class="nav-wrapper blue accent-3">
-                    <a href="/" class="brand-logo">OpenREPL</a>
-                    <form>
+                    <form onsubmit="document.getElementById('search').onchange();document.getElementById('search').blur();return false">
                         <div class="input-field">
                             <input id="search" type="search">
                             <label class="label-icon" for="search"><i class="material-icons">search</i></label>
