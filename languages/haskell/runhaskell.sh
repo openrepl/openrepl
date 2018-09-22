@@ -1,6 +1,7 @@
+set -e
 if [ $# -ne 1 ]; then
-    ghci
+    exec ghci
 else
     mv "$1" /code.hs
-    runghc -- -- /code.hs
+    exec runghc -- -- /code.hs
 fi

@@ -1,6 +1,7 @@
+set -e
 if [ $# -ne 1 ]; then
-    gore
+    exec gore
 else
     cp "$1" /code.go
-    go run /code.go
+    exec go run /code.go
 fi

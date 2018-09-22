@@ -1,5 +1,5 @@
 if [ $# -ne 1 ]; then
-    gforth
+    exec gforth
 else
-    gforth "$1" -e bye
+    exec gforth "$1" -e bye
 fi
