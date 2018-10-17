@@ -98,9 +98,7 @@ window.onresize=function() {
 window.onresize();
 var language = "lua";
 function setLanguage(lang) {
-    if(lang == "python2" || lang == "python3") {
-        editor.getSession().setMode("ace/mode/python");
-    } else if(lang == "bash") {
+    if(lang == "bash") {
         editor.getSession().setMode("ace/mode/sh");
     } else if(lang == "cpp") {
         editor.getSession().setMode("ace/mode/c_cpp");
@@ -175,8 +173,7 @@ function attachLang(l) {
     };
 }
 attachLang("lua");
-attachLang("python2");
-attachLang("python3");
+attachLang("python");
 attachLang("forth");
 attachLang("cpp");
 attachLang("bash");

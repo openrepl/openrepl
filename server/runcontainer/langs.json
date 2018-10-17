@@ -59,23 +59,13 @@
             "cmd": ["/code"]
         }
     },
-    "python2": {
+    "python": {
         "term": {
-            "image": "openrepl/python2",
+            "image": "openrepl/python",
             "cmd": []
         },
         "run": {
-            "image": "openrepl/python2",
-            "cmd": ["/code"]
-        }
-    },
-    "python3": {
-        "term": {
-            "image": "openrepl/python3",
-            "cmd": []
-        },
-        "run": {
-            "image": "openrepl/python3",
+            "image": "openrepl/python",
             "cmd": ["/code"]
         }
     },

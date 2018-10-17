@@ -56,9 +56,7 @@ var langtbl = map[string]string{
 	".js":   "javascript",
 	".lua":  "lua",
 	".php":  "php",
-	".py":   "python2",
-	".py2":  "python2",
-	".py3":  "python3",
+	".py":   "python",
 	".ts":   "typescript",
 }
 

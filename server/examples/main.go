@@ -79,11 +79,6 @@ func HandleHighlight(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// fix python naming for chroma
-	if c.Language == "python2" {
-		c.Language = "python"
-	}
-
 	// prepare syntax highlighter
 	lexer := lexers.Get(c.Language)
 	if lexer == nil {
