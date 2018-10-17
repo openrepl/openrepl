@@ -98,6 +98,7 @@ window.onresize=function() {
 window.onresize();
 var language = "lua";
 function setLanguage(lang) {
+    if(document.getElementById("lang-"+lang) == null) lang = 'lua';
     if(lang == "bash") {
         editor.getSession().setMode("ace/mode/sh");
     } else if(lang == "cpp") {
@@ -169,6 +170,9 @@ savebtn.onclick = function() {
 };
 function attachLang(l) {
     document.getElementById("lang-"+l).onclick = function() {
+        var url = new URL(window.location.href);
+        url.searchParams.set('lang', l);
+        history.pushState(null, '', url.toString());
         setLanguage(l);
     };
 }
@@ -183,11 +187,11 @@ attachLang("php");
 attachLang("golang");
 attachLang("haskell");
 
-(function() {
+window.onpopstate = function() {
     var url = new URL(window.location.href);
     var key = url.searchParams.get('key');
     if(key == null) {
-        setLanguage("lua");
+        setLanguage(url.searchParams.get('lang')||'lua');
         return;
     }
     openrepl.load(key).then(function(code) {
@@ -198,4 +202,5 @@ attachLang("haskell");
         console.log(e);
         setLanguage("lua");
     });
-})();
+};
+window.onpopstate();
