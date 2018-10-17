@@ -172,6 +172,7 @@ function attachLang(l) {
     document.getElementById("lang-"+l).onclick = function() {
         var url = new URL(window.location.href);
         url.searchParams.set('lang', l);
+        url.searchParams.delete('key');
         history.pushState(null, '', url.toString());
         setLanguage(l);
     };
